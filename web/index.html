@@ -258,6 +258,11 @@
     <div id="game-over">
         <h2>Game Over!</h2>
         <div id="final-score">0</div>
+        <div id="score-submit-area" style="margin: 18px 0 10px 0; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <input id="player-name-input" type="text" maxlength="32" placeholder="Your name" style="font-size:1.2em;padding:8px 16px;border-radius:8px;border:1px solid #ccc;min-width:180px;text-align:center;" />
+            <button id="submit-score-btn" style="font-size:1.1em;padding:8px 24px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Submit Score</button>
+            <div id="submit-score-status" style="font-size:0.98em;color:#2196F3;margin-top:4px;min-height:20px;"></div>
+        </div>
         <button id="play-again">Play Again</button>
     </div>
     <script>
@@ -287,6 +292,11 @@
         const COLOR_CORRECT_MISSED = 'rgba(0,0,155,0.75)'; // 00009bbf
         const COLOR_ADJACENT = '#f8fb00e6'; // distance = 1
         const COLOR_SECOND = '#ff7806e5';   // distance = 2
+
+        // Airtable leaderboard integration
+        const AIRTABLE_PAT = 'patCzuML1BEKrhrl9.352572baba8d780db45914918f4322b7b0ca26903fb66be5158281946be99342';
+        const AIRTABLE_BASE_ID = 'appCbVj3ew3VMZEOr';
+        const AIRTABLE_TABLE_NAME = 'Leaderboard';
 
         // Load districts data
         fetch('districts_transformed.json')
@@ -473,9 +483,35 @@
             }
         }
 
+        function submitScoreToAirtable(name, score) {
+            fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_PAT}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    fields: {
+                        Name: name,
+                        Score: score
+                    }
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Score submitted to Airtable:', data);
+            })
+            .catch(err => {
+                console.error('Airtable submit error:', err);
+            });
+        }
+
         function endGame() {
             document.getElementById('game-over').style.display = 'block';
             document.getElementById('final-score').textContent = score;
+            document.getElementById('player-name-input').value = '';
+            document.getElementById('submit-score-btn').disabled = false;
+            document.getElementById('submit-score-status').textContent = '';
         }
 
         document.getElementById('play-again').addEventListener('click', () => {
@@ -648,6 +684,29 @@
         });
         helpModal.addEventListener('click', (e) => {
             if (e.target === helpModal) helpModal.style.display = 'none';
+        });
+
+        // Handle score submission
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitBtn = document.getElementById('submit-score-btn');
+            const nameInput = document.getElementById('player-name-input');
+            const statusDiv = document.getElementById('submit-score-status');
+            submitBtn.addEventListener('click', () => {
+                const name = nameInput.value.trim();
+                if (!name) {
+                    statusDiv.textContent = 'Please enter your name.';
+                    statusDiv.style.color = '#f44336';
+                    return;
+                }
+                submitBtn.disabled = true;
+                statusDiv.textContent = 'Submitting...';
+                statusDiv.style.color = '#2196F3';
+                submitScoreToAirtable(name, score);
+                setTimeout(() => {
+                    statusDiv.textContent = 'Score submitted!';
+                    statusDiv.style.color = '#109b00';
+                }, 800);
+            });
         });
     </script>
 </body>
