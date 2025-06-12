@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Belarus Districts Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100vw;
+            min-height: 100vh;
+        }
+        .top-panel {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+        #target-district {
+            font-size: 72px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        #timer-display {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        #timer-container {
+            width: 60vw;
+            max-width: 900px;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 1s linear, background-color 1s linear;
+        }
+        .game-area {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            width: 100%;
+            gap: 32px;
+        }
+        #game-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 32px 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            min-width: 120px;
+            margin-top: 40px;
+        }
+        #score {
+            font-size: 56px;
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 32px;
+            transition: transform 0.3s;
+        }
+        #score.changed {
+            transform: scale(1.2);
+        }
+        #attempts {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .attempt-light {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 6px rgba(76,175,80,0.15);
+        }
+        .attempt-light.failed {
+            opacity: 0.2;
+        }
+        #map-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e0e0e0;
+            width: 800px;
+            max-width: 90vw;
+            height: auto;
+        }
+        #map {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+        .district {
+            fill: #ccc;
+            stroke: #fff;
+            stroke-width: 1;
+            transition: fill 0.3s;
+        }
+        .district:hover {
+            fill: #999;
+        }
+        .district.correct {
+            fill: #4CAF50 !important;
+        }
+        .district.wrong {
+            fill: #f44336 !important;
+        }
+        #game-over {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 1000;
+            min-width: 320px;
+        }
+        #final-score {
+            font-size: 48px;
+            color: #2196F3;
+            margin: 20px 0;
+        }
+        #play-again {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #play-again:hover {
+            background-color: #45a049;
+        }
+        @media (max-width: 1100px) {
+            #map-container {
+                width: 98vw;
+                max-width: 98vw;
+            }
+            #map {
+                width: 100%;
+                max-width: 98vw;
+            }
+            #timer-container {
+                width: 90vw;
+            }
+        }
+        @media (max-width: 800px) {
+            .game-area {
+                flex-direction: column;
+                align-items: center;
+            }
+            #game-info {
+                flex-direction: row;
+                margin-top: 0;
+                margin-bottom: 16px;
+                min-width: 0;
+                padding: 16px 8px;
+            }
+            #score {
+                margin-bottom: 0;
+                margin-right: 24px;
+            }
+            #attempts {
+                flex-direction: row;
+                gap: 8px;
+            }
+            #map-container {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="start-dialog" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:3000;">
+        <div style="background:white;padding:40px 60px;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.2);text-align:center;">
+            <h2>Belarus Districts Game</h2>
+            <button id="start-game-btn" style="font-size:1.5em;padding:16px 40px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Start Game</button>
+        </div>
+    </div>
+    <div id="help-icon" style="position:fixed;top:18px;right:24px;z-index:2000;cursor:pointer;font-size:2.2em;color:#2196F3;background:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);">?</div>
+    <div id="help-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);z-index:2100;align-items:center;justify-content:center;">
+      <div style="background:white;padding:32px 36px 24px 36px;border-radius:16px;max-width:420px;box-shadow:0 4px 24px rgba(0,0,0,0.18);position:relative;">
+        <button id="close-help" style="position:absolute;top:10px;right:14px;font-size:1.5em;background:none;border:none;cursor:pointer;color:#888;">&times;</button>
+        <h2 style="margin-top:0;font-size:1.3em;">How to Play</h2>
+        <ul style="padding-left:20px;font-size:1.08em;">
+          <li>Find the highlighted district on the map by clicking it.</li>
+          <li>You have <b>3 attempts</b> and <b>10 seconds</b> per round.</li>
+          <li>Scoring: <br/>
+            <ul style="margin-top:4px;">
+              <li><b>100 points</b> for a correct answer within 2 seconds.</li>
+              <li>-20 points per failed attempt.</li>
+              <li>-5 points per full second after 2 seconds.</li>
+            </ul>
+          </li>
+          <li>Color hints for wrong guesses:
+            <ul style="margin-top:4px;">
+              <li><span style="background:#f8fb00e6;padding:2px 8px;border-radius:4px;">Yellow</span>: Adjacent to the correct district</li>
+              <li><span style="background:#ff7806e5;padding:2px 8px;border-radius:4px;color:white;">Orange</span>: 2 districts away</li>
+              <li><span style="background:rgba(255,0,0,0.75);padding:2px 8px;border-radius:4px;color:white;">Red</span>: 3 or more districts away</li>
+            </ul>
+          </li>
+        </ul>
+        <div style="margin-top:10px;font-size:0.98em;color:#666;">Click outside this window or the X to close.</div>
+      </div>
+    </div>
+    <div class="main-container">
+        <div class="top-panel">
+            <div id="target-district"></div>
+            <!-- <div id="timer-display" style="font-size:2em;font-weight:bold;margin-bottom:4px;"></div> -->
+            <div id="timer-container">
+                <div id="timer-bar"></div>
+            </div>
+        </div>
+        <div class="game-area">
+            <div id="game-info">
+                <div id="score">0</div>
+                <div id="attempts">
+                    <div class="attempt-light"></div>
+                    <div class="attempt-light"></div>
+                    <div class="attempt-light"></div>
+                </div>
+            </div>
+            <div id="map-container">
+                <object id="map" data="beldist.svg" type="image/svg+xml"></object>
+            </div>
+        </div>
+    </div>
+    <div id="game-over">
+        <h2>Game Over!</h2>
+        <div id="final-score">0</div>
+        <div id="score-submit-area" style="margin: 18px 0 10px 0; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <input id="player-name-input" type="text" maxlength="32" placeholder="Your name" style="font-size:1.2em;padding:8px 16px;border-radius:8px;border:1px solid #ccc;min-width:180px;text-align:center;" />
+            <button id="submit-score-btn" style="font-size:1.1em;padding:8px 24px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Submit Score</button>
+            <div id="submit-score-status" style="font-size:0.98em;color:#2196F3;margin-top:4px;min-height:20px;"></div>
+        </div>
+        <div id="leaderboard-container" style="margin: 18px 0 10px 0; text-align: center;">
+            <h3 style="margin-bottom: 8px; font-size: 1.1em; color: #2196F3;">Top 10 Scores</h3>
+            <table id="leaderboard-table" style="margin: 0 auto; width: auto; border-collapse:collapse; font-size:1.05em; background:white;">
+                <thead><tr><th style="text-align:left;padding:4px 18px;">Name</th><th style="text-align:right;padding:4px 18px;">Score</th></tr></thead>
+                <tbody></tbody>
+            </table>
+            <div id="leaderboard-status" style="font-size:0.98em;color:#888;margin-top:4px;"></div>
+        </div>
+        <button id="play-again" style="display:block; margin: 24px auto 0 auto; padding: 15px 30px; font-size: 18px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">Play Again</button>
+    </div>
+    <script>
+        let districts = [];
+        let currentDistrict = null;
+        let score = 0;
+        let attempts = 3;
+        let timeLeft = 10;
+        let timer = null;
+        let usedDistricts = new Set();
+        let round = 0;
+        const TOTAL_ROUNDS = 20;
+        let failedAttempts = new Set();
+        let districtsDataCodes = new Set();
+        let isLocked = false;
+        let roundStartTime = null;
+        const TOTAL_TIME = 10;
+        let timerInterval = null;
+        let timerDisplayInterval = null;
+        let pendingNextTask = false;
+        let adjacencyMatrix = null;
+
+        // Color constants
+        const COLOR_DEFAULT = 'rgba(0,0,245,0.25)';      // 0000f53f
+        const COLOR_WRONG = 'rgba(255,0,0,0.75)';        // ff0000bf
+        const COLOR_CORRECT = 'rgba(16,155,0,0.75)';     // 109b00bf
+        const COLOR_CORRECT_MISSED = 'rgba(0,0,155,0.75)'; // 00009bbf
+        const COLOR_ADJACENT = '#f8fb00e6'; // distance = 1
+        const COLOR_SECOND = '#ff7806e5';   // distance = 2
+
+        // Airtable leaderboard integration
+        const AIRTABLE_PAT = 'patCzuML1BEKrhrl9.352572baba8d780db45914918f4322b7b0ca26903fb66be5158281946be99342';
+        const AIRTABLE_BASE_ID = 'appCbVj3ew3VMZEOr';
+        const AIRTABLE_TABLE_NAME = 'Leaderboard';
+
+        // Load districts data
+        fetch('districts_transformed.json')
+            .then(response => response.json())
+            .then(data => {
+                districts = data;
+                districtsDataCodes = new Set(districts.map(d => d.code));
+            });
+
+        // Load adjacency data
+        fetch('district_adjacency.json')
+            .then(response => response.json())
+            .then(data => {
+                adjacencyMatrix = data;
+                console.log('Adjacency matrix loaded successfully:', adjacencyMatrix);
+            })
+            .catch(error => {
+                console.error('Error loading adjacency matrix:', error);
+                // Retry loading after a delay
+                setTimeout(() => {
+                    fetch('district_adjacency.json')
+                        .then(response => response.json())
+                        .then(data => {
+                            adjacencyMatrix = data;
+                            console.log('Adjacency matrix loaded successfully on retry:', adjacencyMatrix);
+                        })
+                        .catch(err => console.error('Retry failed:', err));
+                }, 2000);
+            });
+
+        function initializeGameUI() {
+            // Reset all UI elements to initial state
+            resetAllDistricts();
+            document.getElementById('score').textContent = 0;
+            updateAttempts(3);
+            document.getElementById('timer-bar').style.width = '100%';
+            document.getElementById('timer-bar').style.backgroundColor = '#4CAF50';
+            document.getElementById('target-district').textContent = '';
+        }
+
+        function startNewTask() {
+            if (round >= TOTAL_ROUNDS) {
+                endGame();
+                return;
+            }
+            isLocked = false;
+            attempts = 3;
+            timeLeft = TOTAL_TIME;
+            failedAttempts.clear();
+            updateAttempts();
+            resetAllDistricts();
+            let availableDistricts = districts.filter(d => !usedDistricts.has(d.code));
+            if (availableDistricts.length === 0) {
+                endGame();
+                return;
+            }
+            currentDistrict = availableDistricts[Math.floor(Math.random() * availableDistricts.length)];
+            usedDistricts.add(currentDistrict.code);
+            document.getElementById('target-district').textContent = currentDistrict.name;
+            document.getElementById('timer-bar').style.width = '100%';
+            document.getElementById('timer-bar').style.backgroundColor = '#4CAF50';
+            roundStartTime = Date.now();
+            if (timerInterval) clearInterval(timerInterval);
+            if (timerDisplayInterval) clearInterval(timerDisplayInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            timerDisplayInterval = setInterval(updateTimerDisplay, 100);
+            round++;
+        }
+
+        function endTaskAndBlink(blinkFn, updateScoreFn) {
+            isLocked = true;
+            if (timerInterval) clearInterval(timerInterval);
+            if (timerDisplayInterval) clearInterval(timerDisplayInterval);
+            updateAttempts(3);
+            document.getElementById('timer-bar').style.width = '100%';
+            document.getElementById('timer-bar').style.backgroundColor = '#4CAF50';
+            if (updateScoreFn) updateScoreFn();
+            blinkFn(() => {
+                setTimeout(() => {
+                    startNewTask();
+                }, 500);
+            });
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                if (!isLocked) {
+                    isLocked = true;
+                    endTaskAndBlink(
+                        (done) => {
+                            // Blink correct district in dark blue
+                            const svgObject = document.getElementById('map');
+                            if (svgObject.contentDocument) {
+                                const svgDoc = svgObject.contentDocument;
+                                const correctPath = svgDoc.getElementById('dist-' + currentDistrict.code);
+                                if (correctPath) {
+                                    setTimeout(() => {
+                                        blinkDistrict(correctPath, COLOR_CORRECT_MISSED, COLOR_DEFAULT, 1500, 200, done);
+                                    }, 0);
+                                } else {
+                                    done();
+                                }
+                            } else {
+                                done();
+                            }
+                        },
+                        null
+                    );
+                }
+            }
+        }
+
+        function updateTimerDisplay() {
+            if (!roundStartTime) return;
+            let elapsed = (Date.now() - roundStartTime) / 1000;
+            let remaining = Math.max(0, TOTAL_TIME - elapsed);
+            const percentage = (remaining / TOTAL_TIME) * 100;
+            document.getElementById('timer-bar').style.width = percentage + '%';
+            const hue = (remaining / TOTAL_TIME) * 120;
+            document.getElementById('timer-bar').style.backgroundColor = `hsl(${hue}, 70%, 50%)`;
+        }
+
+        function stopTimerDisplay() {
+            if (timerDisplayInterval) clearInterval(timerDisplayInterval);
+            timerDisplayInterval = null;
+        }
+
+        function resetAllDistricts() {
+            const svgObject = document.getElementById('map');
+            if (svgObject.contentDocument) {
+                const svgDoc = svgObject.contentDocument;
+                svgDoc.querySelectorAll('path').forEach(district => {
+                    district.classList.remove('correct', 'wrong');
+                    district.setAttribute('fill', COLOR_DEFAULT);
+                    district.setAttribute('style', 'fill: ' + COLOR_DEFAULT + ' !important');
+                    district.setAttribute('stroke', '#000000');
+                    district.setAttribute('stroke-opacity', '1');
+                });
+            }
+        }
+
+        function blinkDistrict(district, color1, color2, duration = 1500, interval = 200, callback) {
+            let blinkCount = 0;
+            const maxBlinks = Math.floor(duration / interval);
+            let blink = setInterval(() => {
+                if (blinkCount % 2 === 0) {
+                    district.setAttribute('fill', color1);
+                    district.setAttribute('style', 'fill: ' + color1 + ' !important');
+                } else {
+                    district.setAttribute('fill', color2);
+                    district.setAttribute('style', 'fill: ' + color2 + ' !important');
+                }
+                district.setAttribute('stroke', '#000000');
+                district.setAttribute('stroke-opacity', '1');
+                blinkCount++;
+                if (blinkCount > maxBlinks) {
+                    clearInterval(blink);
+                    district.setAttribute('fill', color1);
+                    district.setAttribute('style', 'fill: ' + color1 + ' !important');
+                    district.setAttribute('stroke', '#000000');
+                    district.setAttribute('stroke-opacity', '1');
+                    if (callback) callback();
+                }
+            }, interval);
+        }
+
+        function updateAttempts(val) {
+            const lights = document.querySelectorAll('.attempt-light');
+            lights.forEach((light, index) => {
+                light.classList.toggle('failed', index >= val);
+            });
+        }
+
+        function updateScore(newPoints = 0) {
+            if (newPoints > 0) {
+                score += newPoints;
+                const scoreElement = document.getElementById('score');
+                scoreElement.textContent = score;
+                scoreElement.classList.add('changed');
+                setTimeout(() => scoreElement.classList.remove('changed'), 300);
+            } else {
+                document.getElementById('score').textContent = score;
+            }
+        }
+
+        function submitScoreToAirtable(name, score) {
+            fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_PAT}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    fields: {
+                        Name: name,
+                        Score: score
+                    }
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Score submitted to Airtable:', data);
+            })
+            .catch(err => {
+                console.error('Airtable submit error:', err);
+            });
+        }
+
+        function fetchLeaderboardAndShow() {
+            const tableBody = document.querySelector('#leaderboard-table tbody');
+            const statusDiv = document.getElementById('leaderboard-status');
+            tableBody.innerHTML = '';
+            statusDiv.textContent = 'Loading...';
+            fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=10`, {
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_PAT}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.records || data.records.length === 0) {
+                    statusDiv.textContent = 'No scores yet.';
+                    return;
+                }
+                statusDiv.textContent = '';
+                data.records.forEach(record => {
+                    const { Name, Score } = record.fields;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td style="text-align:left;padding:4px 18px;">${Name ? Name : '(anon)'}</td><td style="text-align:right;padding:4px 18px;">${Score}</td>`;
+                    tableBody.appendChild(tr);
+                });
+            })
+            .catch(err => {
+                statusDiv.textContent = 'Failed to load leaderboard.';
+                console.error('Leaderboard fetch error:', err);
+            });
+        }
+
+        function endGame() {
+            document.getElementById('game-over').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('player-name-input').value = '';
+            document.getElementById('submit-score-btn').disabled = false;
+            document.getElementById('submit-score-status').textContent = '';
+            fetchLeaderboardAndShow();
+        }
+
+        document.getElementById('play-again').addEventListener('click', () => {
+            document.getElementById('game-over').style.display = 'none';
+            initializeGameUI();
+            usedDistricts.clear();
+            round = 0;
+            score = 0;
+            startNewTask();
+        });
+
+        // Handle map loading
+        document.getElementById('map').addEventListener('load', function() {
+            const svgDoc = this.contentDocument;
+            const districts = svgDoc.querySelectorAll('path');
+            console.log('Found', districts.length, '<path> elements in SVG.');
+            if (districts.length === 0) {
+                console.warn('No <path> elements found in SVG!');
+            } else {
+                districts.forEach(district => {
+                    console.log('District path id:', district.id);
+                    district.addEventListener('click', function() {
+                        if (isLocked) return;
+                        const districtCode = this.id.replace('dist-', '');
+                        // Check if this district is already marked as wrong (by fill color)
+                        const currentFill = this.getAttribute('fill');
+                        const isAlreadyWrong = (
+                            currentFill === COLOR_WRONG ||
+                            currentFill === COLOR_ADJACENT ||
+                            currentFill === COLOR_SECOND
+                        );
+                        if (isAlreadyWrong && districtCode !== currentDistrict.code) {
+                            // Misclick on already attempted wrong district, ignore
+                            return;
+                        }
+                        console.log('Clicked district:', districtCode);
+                        if (!currentDistrict) return;
+                        if (!districtsDataHasCode(districtCode)) return;
+                        // Compute and print distance between clicked and correct district
+                        if (adjacencyMatrix) {
+                            const from = districtCode;
+                            const to = currentDistrict.code;
+                            const distance = computeDistrictDistance(adjacencyMatrix, from, to);
+                            console.log(`Distance from ${from} to ${to}:`, distance);
+                            if (distance > 0) {
+                                const hintColor = computeHintColor(distance);
+                                console.log(`Hint color for distance ${distance}:`, hintColor);
+                                // Apply hint color to the clicked district
+                                this.setAttribute('fill', hintColor);
+                                this.setAttribute('style', 'fill: ' + hintColor + ' !important');
+                            }
+                        } else {
+                            console.log('Adjacency matrix not loaded yet.');
+                        }
+                        // Remove all attempt/wrong classes, only set fill dynamically
+                        this.classList.remove('wrong');
+                        this.classList.remove('attempted');
+                        this.classList.remove('previous-attempt');
+                        this.setAttribute('stroke', '#000000');
+                        this.setAttribute('stroke-opacity', '1');
+                        if (districtCode === currentDistrict.code) {
+                            // Correct guess
+                            let timeSpent = (Date.now() - roundStartTime) / 1000;
+                            let fullSeconds = Math.floor(timeSpent);
+                            let failedAttemptsCount = 3 - attempts;
+                            let timePenalty = 0;
+                            let remaining = Math.max(0, TOTAL_TIME - timeSpent);
+                            if (remaining < 8) {
+                                let penaltySeconds = Math.floor(8 - remaining);
+                                timePenalty = penaltySeconds * 5;
+                            }
+                            const baseScore = 100;
+                            const attemptPenalty = failedAttemptsCount * 20;
+                            const roundScore = Math.max(0, baseScore - attemptPenalty - timePenalty);
+                            endTaskAndBlink(
+                                (done) => blinkDistrict(this, COLOR_CORRECT, COLOR_DEFAULT, 1500, 200, done),
+                                () => {
+                                    updateScore(roundScore);
+                                    console.log(`Time spent: ${timeSpent.toFixed(1)}s`);
+                                    console.log(`Time penalty: ${timePenalty} points`);
+                                    console.log(`Failed attempts: ${failedAttemptsCount}`);
+                                    console.log(`Failed attempts penalty: ${attemptPenalty} points`);
+                                    console.log(`Total: ${roundScore} points`);
+                                }
+                            );
+                        } else {
+                            // Wrong guess
+                            let timeSpent = (Date.now() - roundStartTime) / 1000;
+                            console.log(`Wrong guess. Time spent: ${timeSpent.toFixed(1)}s`);
+                            failedAttempts.add(districtCode);
+                            attempts--;
+                            updateAttempts(attempts);
+                            if (attempts <= 0 && !isLocked) {
+                                isLocked = true;
+                                endTaskAndBlink(
+                                    (done) => {
+                                        const svgObject = document.getElementById('map');
+                                        if (svgObject.contentDocument) {
+                                            const svgDoc = svgObject.contentDocument;
+                                            const correctPath = svgDoc.getElementById('dist-' + currentDistrict.code);
+                                            if (correctPath) {
+                                                setTimeout(() => {
+                                                    blinkDistrict(correctPath, COLOR_CORRECT_MISSED, COLOR_DEFAULT, 1500, 200, done);
+                                                }, 0);
+                                            } else {
+                                                done();
+                                            }
+                                        } else {
+                                            done();
+                                        }
+                                    },
+                                    null
+                                );
+                            }
+                        }
+                    });
+                });
+            }
+            function districtsDataHasCode(code) {
+                return districtsDataCodes.has(code);
+            }
+        });
+
+        // Only start the game when the button is clicked
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('start-game-btn').addEventListener('click', () => {
+                document.getElementById('start-dialog').style.display = 'none';
+                initializeGameUI();
+                usedDistricts.clear();
+                score = 0;
+                startNewTask();
+            });
+        });
+
+        // Helper: BFS for shortest path in adjacency graph
+        function computeDistrictDistance(adjacency, from, to) {
+            if (from === to) return 0;
+            const visited = new Set();
+            const queue = [[from, 0]];
+            visited.add(from);
+            while (queue.length > 0) {
+                const [current, dist] = queue.shift();
+                const neighbors = adjacency[current] || [];
+                for (const neighbor of neighbors) {
+                    if (neighbor === to) return dist + 1;
+                    if (!visited.has(neighbor)) {
+                        visited.add(neighbor);
+                        queue.push([neighbor, dist + 1]);
+                    }
+                }
+            }
+            return Infinity; // Not connected
+        }
+
+        // Helper: compute hint color based on distance
+        function computeHintColor(distance) {
+            if (distance === 0) return COLOR_CORRECT;
+            if (distance === 1) return COLOR_ADJACENT;
+            if (distance === 2) return COLOR_SECOND;
+            return COLOR_WRONG;
+        }
+
+        // Help modal logic
+        const helpIcon = document.getElementById('help-icon');
+        const helpModal = document.getElementById('help-modal');
+        const closeHelp = document.getElementById('close-help');
+        helpIcon.addEventListener('click', () => {
+            helpModal.style.display = 'flex';
+        });
+        closeHelp.addEventListener('click', () => {
+            helpModal.style.display = 'none';
+        });
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) helpModal.style.display = 'none';
+        });
+
+        // Handle score submission
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitBtn = document.getElementById('submit-score-btn');
+            const nameInput = document.getElementById('player-name-input');
+            const statusDiv = document.getElementById('submit-score-status');
+            submitBtn.addEventListener('click', () => {
+                const name = nameInput.value.trim();
+                if (!name) {
+                    statusDiv.textContent = 'Please enter your name.';
+                    statusDiv.style.color = '#f44336';
+                    return;
+                }
+                submitBtn.disabled = true;
+                statusDiv.textContent = 'Submitting...';
+                statusDiv.style.color = '#2196F3';
+                submitScoreToAirtable(name, score);
+                setTimeout(() => {
+                    statusDiv.textContent = 'Score submitted!';
+                    statusDiv.style.color = '#109b00';
+                }, 800);
+            });
+        });
+    </script>
+</body>
+</html> 
