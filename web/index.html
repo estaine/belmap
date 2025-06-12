@@ -263,6 +263,14 @@
             <button id="submit-score-btn" style="font-size:1.1em;padding:8px 24px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Submit Score</button>
             <div id="submit-score-status" style="font-size:0.98em;color:#2196F3;margin-top:4px;min-height:20px;"></div>
         </div>
+        <div id="leaderboard-container" style="margin: 18px 0 10px 0;">
+            <h3 style="margin-bottom: 8px; font-size: 1.1em; color: #2196F3;">Top 10 Scores</h3>
+            <table id="leaderboard-table" style="width:100%;border-collapse:collapse;font-size:1.05em;background:white;">
+                <thead><tr><th style="text-align:left;padding:4px 8px;">Name</th><th style="text-align:right;padding:4px 8px;">Score</th></tr></thead>
+                <tbody></tbody>
+            </table>
+            <div id="leaderboard-status" style="font-size:0.98em;color:#888;margin-top:4px;"></div>
+        </div>
         <button id="play-again">Play Again</button>
     </div>
     <script>
@@ -506,12 +514,43 @@
             });
         }
 
+        function fetchLeaderboardAndShow() {
+            const tableBody = document.querySelector('#leaderboard-table tbody');
+            const statusDiv = document.getElementById('leaderboard-status');
+            tableBody.innerHTML = '';
+            statusDiv.textContent = 'Loading...';
+            fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=10`, {
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_PAT}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.records || data.records.length === 0) {
+                    statusDiv.textContent = 'No scores yet.';
+                    return;
+                }
+                statusDiv.textContent = '';
+                data.records.forEach(record => {
+                    const { Name, Score } = record.fields;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td style="padding:4px 8px;">${Name ? Name : '(anon)'}</td><td style="text-align:right;padding:4px 8px;">${Score}</td>`;
+                    tableBody.appendChild(tr);
+                });
+            })
+            .catch(err => {
+                statusDiv.textContent = 'Failed to load leaderboard.';
+                console.error('Leaderboard fetch error:', err);
+            });
+        }
+
         function endGame() {
             document.getElementById('game-over').style.display = 'block';
             document.getElementById('final-score').textContent = score;
             document.getElementById('player-name-input').value = '';
             document.getElementById('submit-score-btn').disabled = false;
             document.getElementById('submit-score-status').textContent = '';
+            fetchLeaderboardAndShow();
         }
 
         document.getElementById('play-again').addEventListener('click', () => {
