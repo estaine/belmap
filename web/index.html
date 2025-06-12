@@ -339,6 +339,10 @@
             updateAttempts();
             resetAllDistricts();
             let availableDistricts = districts.filter(d => !usedDistricts.has(d.code));
+            if (availableDistricts.length === 0) {
+                endGame();
+                return;
+            }
             currentDistrict = availableDistricts[Math.floor(Math.random() * availableDistricts.length)];
             usedDistricts.add(currentDistrict.code);
             document.getElementById('target-district').textContent = currentDistrict.name;
@@ -495,6 +499,17 @@
                     district.addEventListener('click', function() {
                         if (isLocked) return;
                         const districtCode = this.id.replace('dist-', '');
+                        // Check if this district is already marked as wrong (by fill color)
+                        const currentFill = this.getAttribute('fill');
+                        const isAlreadyWrong = (
+                            currentFill === COLOR_WRONG ||
+                            currentFill === COLOR_ADJACENT ||
+                            currentFill === COLOR_SECOND
+                        );
+                        if (isAlreadyWrong && districtCode !== currentDistrict.code) {
+                            // Misclick on already attempted wrong district, ignore
+                            return;
+                        }
                         console.log('Clicked district:', districtCode);
                         if (!currentDistrict) return;
                         if (!districtsDataHasCode(districtCode)) return;
