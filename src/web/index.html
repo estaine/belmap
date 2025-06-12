@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belarus Districts Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="map-container">
+            <div id="map"></div>
+            <div id="tooltip" class="tooltip"></div>
+        </div>
+        <div class="controls">
+            <button id="create-region-btn">Create New Region</button>
+            <button id="save-regions-btn">Save Regions</button>
+            <div class="layer-controls">
+                <label><input type="checkbox" id="toggle-cities" checked> Cities</label>
+                <label><input type="checkbox" id="toggle-borders" checked> Borders</label>
+            </div>
+            <div class="stats">
+                <h3>Region Statistics</h3>
+                <table id="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Region Name</th>
+                            <th>Area (km²)</th>
+                            <th>Population</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 

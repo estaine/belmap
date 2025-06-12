@@ -1,0 +1,852 @@
+{
+  "vd": [
+    "mo",
+    "po",
+    "rs"
+  ],
+  "mo": [
+    "bu",
+    "hb",
+    "po",
+    "sr",
+    "vd"
+  ],
+  "rs": [
+    "po",
+    "vd"
+  ],
+  "bu": [
+    "mo",
+    "ps",
+    "sr"
+  ],
+  "sr": [
+    "bu",
+    "hb",
+    "mo",
+    "ps"
+  ],
+  "ps": [
+    "at",
+    "bu",
+    "dk",
+    "hb",
+    "md",
+    "sr"
+  ],
+  "hb": [
+    "dk",
+    "mo",
+    "po",
+    "ps",
+    "sr",
+    "us"
+  ],
+  "po": [
+    "hb",
+    "hd",
+    "mo",
+    "rs",
+    "su",
+    "us",
+    "vd"
+  ],
+  "hd": [
+    "po",
+    "su",
+    "vc"
+  ],
+  "vc": [
+    "bs",
+    "hd",
+    "lz",
+    "si",
+    "su"
+  ],
+  "lz": [
+    "du",
+    "or",
+    "si",
+    "vc"
+  ],
+  "at": [
+    "as",
+    "md",
+    "ps",
+    "sm"
+  ],
+  "md": [
+    "at",
+    "dk",
+    "ps",
+    "sm",
+    "vl"
+  ],
+  "dk": [
+    "ba",
+    "hb",
+    "la",
+    "lp",
+    "md",
+    "ps",
+    "us",
+    "vl"
+  ],
+  "us": [
+    "bs",
+    "dk",
+    "hb",
+    "lp",
+    "po",
+    "su"
+  ],
+  "su": [
+    "bs",
+    "hd",
+    "po",
+    "us",
+    "vc"
+  ],
+  "lp": [
+    "ba",
+    "bs",
+    "cs",
+    "dk",
+    "us"
+  ],
+  "bs": [
+    "cs",
+    "lp",
+    "si",
+    "su",
+    "us",
+    "vc"
+  ],
+  "as": [
+    "at",
+    "iu",
+    "sm",
+    "vz"
+  ],
+  "sm": [
+    "as",
+    "at",
+    "ma",
+    "md",
+    "vl",
+    "vz"
+  ],
+  "cs": [
+    "ba",
+    "bs",
+    "kk",
+    "lp",
+    "si",
+    "tl"
+  ],
+  "si": [
+    "bs",
+    "cs",
+    "lz",
+    "or",
+    "tl",
+    "vc"
+  ],
+  "iu": [
+    "as",
+    "li",
+    "nh",
+    "sb",
+    "vo",
+    "vz"
+  ],
+  "vo": [
+    "iu",
+    "li",
+    "sc"
+  ],
+  "vz": [
+    "as",
+    "dz",
+    "iu",
+    "ma",
+    "mi",
+    "sb",
+    "sm"
+  ],
+  "vl": [
+    "dk",
+    "la",
+    "ma",
+    "md",
+    "mi",
+    "sm"
+  ],
+  "ma": [
+    "mi",
+    "sm",
+    "vl",
+    "vz"
+  ],
+  "du": [
+    "hc",
+    "lz",
+    "or"
+  ],
+  "or": [
+    "du",
+    "hc",
+    "lz",
+    "si",
+    "sk",
+    "tl"
+  ],
+  "tl": [
+    "cs",
+    "kh",
+    "kk",
+    "or",
+    "si",
+    "sk"
+  ],
+  "kk": [
+    "ba",
+    "be",
+    "bl",
+    "cs",
+    "kh",
+    "tl"
+  ],
+  "ba": [
+    "be",
+    "ce",
+    "cs",
+    "dk",
+    "kk",
+    "la",
+    "lp",
+    "zo"
+  ],
+  "la": [
+    "ba",
+    "dk",
+    "mi",
+    "vl",
+    "zo"
+  ],
+  "sc": [
+    "dt",
+    "hr",
+    "li",
+    "ms",
+    "vo"
+  ],
+  "li": [
+    "dt",
+    "iu",
+    "nh",
+    "sc",
+    "vo"
+  ],
+  "hr": [
+    "bt",
+    "ms",
+    "sc"
+  ],
+  "bt": [
+    "hr",
+    "ms",
+    "sv",
+    "vv"
+  ],
+  "vv": [
+    "bt",
+    "ms",
+    "pz",
+    "sv",
+    "ze"
+  ],
+  "ms": [
+    "bt",
+    "dt",
+    "hr",
+    "sc",
+    "vv",
+    "ze"
+  ],
+  "hc": [
+    "am",
+    "db",
+    "du",
+    "or",
+    "sk"
+  ],
+  "am": [
+    "ca",
+    "cr",
+    "db",
+    "hc",
+    "kr"
+  ],
+  "db": [
+    "am",
+    "ca",
+    "hc",
+    "ml",
+    "sk"
+  ],
+  "sk": [
+    "bl",
+    "db",
+    "hc",
+    "kh",
+    "ml",
+    "or",
+    "tl"
+  ],
+  "kh": [
+    "bl",
+    "kk",
+    "sk",
+    "tl"
+  ],
+  "zo": [
+    "ba",
+    "ce",
+    "la",
+    "mi"
+  ],
+  "mi": [
+    "ce",
+    "dz",
+    "la",
+    "ma",
+    "pu",
+    "uz",
+    "vl",
+    "vz",
+    "zo"
+  ],
+  "dz": [
+    "mi",
+    "sb",
+    "uz",
+    "vz"
+  ],
+  "sv": [
+    "bt",
+    "pz",
+    "vv"
+  ],
+  "sb": [
+    "dz",
+    "iu",
+    "ka",
+    "kc",
+    "nh",
+    "ns",
+    "uz",
+    "vz"
+  ],
+  "kc": [
+    "bn",
+    "nh",
+    "ns",
+    "sb"
+  ],
+  "nh": [
+    "bn",
+    "dt",
+    "iu",
+    "kc",
+    "li",
+    "sb"
+  ],
+  "dt": [
+    "bn",
+    "li",
+    "ms",
+    "nh",
+    "sc",
+    "sn",
+    "ze"
+  ],
+  "ze": [
+    "dt",
+    "ms",
+    "pz",
+    "sn",
+    "vv"
+  ],
+  "pz": [
+    "bz",
+    "iv",
+    "kb",
+    "ke",
+    "sn",
+    "sv",
+    "vv",
+    "ze"
+  ],
+  "ke": [
+    "br",
+    "kb",
+    "pz",
+    "za"
+  ],
+  "br": [
+    "ke",
+    "mr",
+    "za"
+  ],
+  "mr": [
+    "br",
+    "kb",
+    "za"
+  ],
+  "za": [
+    "br",
+    "kb",
+    "ke",
+    "mr"
+  ],
+  "sn": [
+    "bn",
+    "dt",
+    "iv",
+    "pz",
+    "ze"
+  ],
+  "kb": [
+    "bz",
+    "dr",
+    "ke",
+    "mr",
+    "pz",
+    "za"
+  ],
+  "kr": [
+    "am",
+    "cr",
+    "ky"
+  ],
+  "ky": [
+    "cm",
+    "cr",
+    "kp",
+    "kr",
+    "ks"
+  ],
+  "cm": [
+    "ks",
+    "ky"
+  ],
+  "ks": [
+    "cm",
+    "kp",
+    "ky"
+  ],
+  "bn": [
+    "dt",
+    "iv",
+    "kc",
+    "lc",
+    "nh",
+    "ns",
+    "sn"
+  ],
+  "ns": [
+    "bn",
+    "ka",
+    "kc",
+    "kl",
+    "lc",
+    "sb"
+  ],
+  "lc": [
+    "bn",
+    "ha",
+    "iv",
+    "kl",
+    "ns"
+  ],
+  "iv": [
+    "bn",
+    "bz",
+    "ha",
+    "ja",
+    "lc",
+    "pi",
+    "pz",
+    "sn"
+  ],
+  "bz": [
+    "dr",
+    "iv",
+    "ja",
+    "kb",
+    "pz"
+  ],
+  "dr": [
+    "bz",
+    "ja",
+    "kb"
+  ],
+  "ca": [
+    "am",
+    "by",
+    "cr",
+    "db",
+    "ml",
+    "sd"
+  ],
+  "ml": [
+    "bl",
+    "by",
+    "ca",
+    "db",
+    "kv",
+    "sk"
+  ],
+  "bl": [
+    "be",
+    "kh",
+    "kk",
+    "kv",
+    "ml",
+    "sk"
+  ],
+  "be": [
+    "ap",
+    "ba",
+    "bl",
+    "ce",
+    "kk",
+    "kv"
+  ],
+  "ce": [
+    "ap",
+    "ba",
+    "be",
+    "mi",
+    "pu",
+    "zo"
+  ],
+  "pu": [
+    "ap",
+    "ce",
+    "mi",
+    "sl",
+    "st",
+    "uz"
+  ],
+  "uz": [
+    "dz",
+    "ka",
+    "mi",
+    "pu",
+    "sb",
+    "sl"
+  ],
+  "ja": [
+    "bz",
+    "dr",
+    "iv",
+    "pi"
+  ],
+  "pi": [
+    "ha",
+    "iv",
+    "ja",
+    "lu",
+    "so"
+  ],
+  "ha": [
+    "iv",
+    "kl",
+    "lc",
+    "lu",
+    "pi",
+    "sa"
+  ],
+  "kl": [
+    "ha",
+    "ka",
+    "lc",
+    "ns",
+    "sa"
+  ],
+  "ka": [
+    "kl",
+    "ns",
+    "sa",
+    "sb",
+    "sl",
+    "uz"
+  ],
+  "cr": [
+    "am",
+    "ca",
+    "kp",
+    "kr",
+    "ky",
+    "sd"
+  ],
+  "so": [
+    "ll",
+    "lu",
+    "pi",
+    "zy"
+  ],
+  "lu": [
+    "ha",
+    "pi",
+    "sa",
+    "so",
+    "zy"
+  ],
+  "kp": [
+    "cc",
+    "cr",
+    "km",
+    "ks",
+    "ky",
+    "sd"
+  ],
+  "sd": [
+    "by",
+    "ca",
+    "cr",
+    "km",
+    "kp",
+    "ra"
+  ],
+  "by": [
+    "ca",
+    "ki",
+    "kv",
+    "ml",
+    "ra",
+    "sd"
+  ],
+  "sl": [
+    "ka",
+    "lb",
+    "pu",
+    "sa",
+    "st",
+    "uz"
+  ],
+  "st": [
+    "ap",
+    "hl",
+    "lb",
+    "pu",
+    "sl"
+  ],
+  "sa": [
+    "ha",
+    "ka",
+    "kl",
+    "lb",
+    "lu",
+    "sl",
+    "zy"
+  ],
+  "lb": [
+    "hl",
+    "pe",
+    "rb",
+    "sa",
+    "sl",
+    "st",
+    "zy"
+  ],
+  "kv": [
+    "ap",
+    "bb",
+    "be",
+    "bl",
+    "by",
+    "ki",
+    "ml"
+  ],
+  "ap": [
+    "bb",
+    "be",
+    "ce",
+    "hl",
+    "kv",
+    "pu",
+    "st"
+  ],
+  "hl": [
+    "ap",
+    "bb",
+    "lb",
+    "rb",
+    "st"
+  ],
+  "bb": [
+    "ap",
+    "hl",
+    "ki",
+    "kv",
+    "ra",
+    "rb",
+    "sh",
+    "zl"
+  ],
+  "ki": [
+    "bb",
+    "by",
+    "kv",
+    "ra"
+  ],
+  "zy": [
+    "lb",
+    "ll",
+    "lu",
+    "pe",
+    "sa",
+    "so"
+  ],
+  "ll": [
+    "je",
+    "mz",
+    "pe",
+    "so",
+    "zy"
+  ],
+  "cc": [
+    "bk",
+    "km",
+    "kp",
+    "ra",
+    "vt"
+  ],
+  "km": [
+    "cc",
+    "kp",
+    "ra",
+    "sd"
+  ],
+  "ra": [
+    "bb",
+    "bk",
+    "by",
+    "cc",
+    "ki",
+    "km",
+    "sd",
+    "zl"
+  ],
+  "je": [
+    "ll",
+    "mz",
+    "na"
+  ],
+  "pe": [
+    "kn",
+    "lb",
+    "ll",
+    "mz",
+    "rb",
+    "zy"
+  ],
+  "na": [
+    "ch",
+    "je",
+    "mz"
+  ],
+  "rb": [
+    "bb",
+    "hl",
+    "kn",
+    "lb",
+    "pe",
+    "sh"
+  ],
+  "mz": [
+    "ch",
+    "je",
+    "kn",
+    "ll",
+    "na",
+    "pe"
+  ],
+  "sh": [
+    "bb",
+    "kn",
+    "rb",
+    "re",
+    "zl"
+  ],
+  "zl": [
+    "bb",
+    "bk",
+    "ra",
+    "re",
+    "sh"
+  ],
+  "kn": [
+    "ch",
+    "mz",
+    "pe",
+    "rb",
+    "re",
+    "sh"
+  ],
+  "ch": [
+    "bh",
+    "kn",
+    "lo",
+    "mz",
+    "na",
+    "re"
+  ],
+  "re": [
+    "bk",
+    "ch",
+    "ho",
+    "kn",
+    "lo",
+    "sh",
+    "zl"
+  ],
+  "bk": [
+    "cc",
+    "ho",
+    "ra",
+    "re",
+    "vt",
+    "zl"
+  ],
+  "vt": [
+    "bk",
+    "cc",
+    "ds",
+    "ho"
+  ],
+  "ds": [
+    "ho",
+    "vt"
+  ],
+  "ho": [
+    "bk",
+    "ds",
+    "lo",
+    "re",
+    "vt"
+  ],
+  "lo": [
+    "bh",
+    "ch",
+    "ho",
+    "re"
+  ],
+  "bh": [
+    "ch",
+    "lo"
+  ]
+}

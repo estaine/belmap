@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600">
+    <style>
+        .district {
+            fill: #e9ecef;
+            stroke: #fff;
+            stroke-width: 1;
+            transition: fill 0.2s;
+        }
+        .district:hover {
+            fill: #dee2e6;
+            cursor: pointer;
+        }
+        .district.selected {
+            fill: #007bff;
+        }
+        .district.in-region {
+            fill: #28a745;
+        }
+    </style>
+    
+    <!-- Brest Region -->
+    <g id="brest-region">
+        <path class="district" data-district-id="baranovichy" d="M200,100 L250,100 L250,150 L200,150 Z" />
+        <path class="district" data-district-id="berezovsky" d="M250,100 L300,100 L300,150 L250,150 Z" />
+        <path class="district" data-district-id="brest" d="M150,150 L200,150 L200,200 L150,200 Z" />
+        <!-- Add more districts -->
+    </g>
+
+    <!-- Vitebsk Region -->
+    <g id="vitebsk-region">
+        <path class="district" data-district-id="vitebsk" d="M400,50 L450,50 L450,100 L400,100 Z" />
+        <!-- Add more districts -->
+    </g>
+
+    <!-- Gomel Region -->
+    <g id="gomel-region">
+        <path class="district" data-district-id="gomel" d="M500,200 L550,200 L550,250 L500,250 Z" />
+        <!-- Add more districts -->
+    </g>
+
+    <!-- Grodno Region -->
+    <g id="grodno-region">
+        <path class="district" data-district-id="grodno" d="M300,50 L350,50 L350,100 L300,100 Z" />
+        <!-- Add more districts -->
+    </g>
+
+    <!-- Minsk Region -->
+    <g id="minsk-region">
+        <path class="district" data-district-id="minsk" d="M350,150 L400,150 L400,200 L350,200 Z" />
+        <!-- Add more districts -->
+    </g>
+
+    <!-- Mogilev Region -->
+    <g id="mogilev-region">
+        <path class="district" data-district-id="mogilev" d="M450,150 L500,150 L500,200 L450,200 Z" />
+        <!-- Add more districts -->
+    </g>
+</svg> 

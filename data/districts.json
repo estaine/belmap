@@ -1,0 +1,35 @@
+[
+    {
+        "id": "brest",
+        "name": "Brest",
+        "name_ru": "Брест",
+        "name_be": "Брэст",
+        "region": "Brest",
+        "square": 118.9,
+        "population": 340318,
+        "is_city": true,
+        "administrative_center": "Brest"
+    },
+    {
+        "id": "vitebsk",
+        "name": "Vitebsk",
+        "name_ru": "Витебск",
+        "name_be": "Віцебск",
+        "region": "Vitebsk",
+        "square": 124.5,
+        "population": 362466,
+        "is_city": true,
+        "administrative_center": "Vitebsk"
+    },
+    {
+        "id": "gomel",
+        "name": "Gomel",
+        "name_ru": "Гомель",
+        "name_be": "Гомель",
+        "region": "Gomel",
+        "square": 139.8,
+        "population": 510300,
+        "is_city": true,
+        "administrative_center": "Gomel"
+    }
+] 
