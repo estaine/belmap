@@ -142,6 +142,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             text-align: center;
             z-index: 1000;
+            min-width: 320px;
         }
         #final-score {
             font-size: 48px;
@@ -263,15 +264,15 @@
             <button id="submit-score-btn" style="font-size:1.1em;padding:8px 24px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Submit Score</button>
             <div id="submit-score-status" style="font-size:0.98em;color:#2196F3;margin-top:4px;min-height:20px;"></div>
         </div>
-        <div id="leaderboard-container" style="margin: 18px 0 10px 0;">
+        <div id="leaderboard-container" style="margin: 18px 0 10px 0; text-align: center;">
             <h3 style="margin-bottom: 8px; font-size: 1.1em; color: #2196F3;">Top 10 Scores</h3>
-            <table id="leaderboard-table" style="width:100%;border-collapse:collapse;font-size:1.05em;background:white;">
-                <thead><tr><th style="text-align:left;padding:4px 8px;">Name</th><th style="text-align:right;padding:4px 8px;">Score</th></tr></thead>
+            <table id="leaderboard-table" style="margin: 0 auto; width: auto; border-collapse:collapse; font-size:1.05em; background:white;">
+                <thead><tr><th style="text-align:left;padding:4px 18px;">Name</th><th style="text-align:right;padding:4px 18px;">Score</th></tr></thead>
                 <tbody></tbody>
             </table>
             <div id="leaderboard-status" style="font-size:0.98em;color:#888;margin-top:4px;"></div>
         </div>
-        <button id="play-again">Play Again</button>
+        <button id="play-again" style="display:block; margin: 24px auto 0 auto; padding: 15px 30px; font-size: 18px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">Play Again</button>
     </div>
     <script>
         let districts = [];
@@ -534,7 +535,7 @@
                 data.records.forEach(record => {
                     const { Name, Score } = record.fields;
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td style="padding:4px 8px;">${Name ? Name : '(anon)'}</td><td style="text-align:right;padding:4px 8px;">${Score}</td>`;
+                    tr.innerHTML = `<td style="text-align:left;padding:4px 18px;">${Name ? Name : '(anon)'}</td><td style="text-align:right;padding:4px 18px;">${Score}</td>`;
                     tableBody.appendChild(tr);
                 });
             })
