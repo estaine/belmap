@@ -67,7 +67,7 @@
   },
   {
     "code": "ja",
-    "name": "Janaŭski",
+    "name": "Ivanaŭski",
     "name_ru": "Ивановский",
     "name_be": "Іванаўскі",
     "region": "Brest",
@@ -133,14 +133,14 @@
   },
   {
     "code": "mr",
-    "name": "Malarycki",
+    "name": "Małarycki",
     "name_ru": "Малоритский",
     "name_be": "Маларыцкі",
     "region": "Brest",
     "square": 1383.08,
     "population": 22614,
     "bordering_districts": [],
-    "administrative_center": "Malaryta"
+    "administrative_center": "Małaryta"
   },
   {
     "code": "pi",
@@ -188,14 +188,14 @@
   },
   {
     "code": "bu",
-    "name": "Braslaŭski",
+    "name": "Brasłaŭski",
     "name_ru": "Браславский",
     "name_be": "Браслаўскі",
     "region": "Viciebsk",
     "square": 2269.81,
     "population": 23428,
     "bordering_districts": [],
-    "administrative_center": "Braslaŭ"
+    "administrative_center": "Brasłaŭ"
   },
   {
     "code": "vd",
@@ -221,14 +221,14 @@
   },
   {
     "code": "hb",
-    "name": "Hlybocki",
+    "name": "Hłybocki",
     "name_ru": "Глубокский",
     "name_be": "Глыбоцкі",
     "region": "Viciebsk",
     "square": 1763.35,
     "population": 33627,
     "bordering_districts": [],
-    "administrative_center": "Hlybokaje"
+    "administrative_center": "Hłybokaje"
   },
   {
     "code": "hd",
@@ -254,7 +254,7 @@
   },
   {
     "code": "du",
-    "name": "Dubrovenski",
+    "name": "Dubrovienski",
     "name_ru": "Дубровенский",
     "name_be": "Дубровенскі",
     "region": "Viciebsk",
@@ -265,14 +265,14 @@
   },
   {
     "code": "lp",
-    "name": "Lepelski",
+    "name": "Lepielski",
     "name_ru": "Лепельский",
     "name_be": "Лепельскі",
     "region": "Viciebsk",
     "square": 1831.55,
     "population": 30737,
     "bordering_districts": [],
-    "administrative_center": "Lepel"
+    "administrative_center": "Lepiel"
   },
   {
     "code": "lz",
@@ -342,7 +342,7 @@
   },
   {
     "code": "si",
-    "name": "Siennenski",
+    "name": "Sieńnenski",
     "name_ru": "Сенненский",
     "name_be": "Сенненскі",
     "region": "Viciebsk",
@@ -562,14 +562,14 @@
   },
   {
     "code": "rb",
-    "name": "Kastryčnicki",
+    "name": "Akciabrski",
     "name_ru": "Октябрьский район",
     "name_be": "Акцябрскі раён",
     "region": "Homiel",
     "square": 1401.14,
     "population": 13208,
     "bordering_districts": [],
-    "administrative_center": "Kastryčnicki"
+    "administrative_center": "Akciabrski"
   },
   {
     "code": "pe",
@@ -782,14 +782,14 @@
   },
   {
     "code": "sv",
-    "name": "Śvislacki",
+    "name": "Śvisłacki",
     "name_ru": "Свислочский",
     "name_be": "Свіслацкі",
     "region": "Hrodna",
     "square": 1451.27,
     "population": 12755,
     "bordering_districts": [],
-    "administrative_center": "Śvislač"
+    "administrative_center": "Śvisłač"
   },
   {
     "code": "sn",
@@ -914,14 +914,14 @@
   },
   {
     "code": "la",
-    "name": "Lahojski",
+    "name": "Łahojski",
     "name_ru": "Логойский",
     "name_be": "Лагойскі",
     "region": "Minsk",
     "square": 2379.84,
     "population": 38519,
     "bordering_districts": [],
-    "administrative_center": "Lahojsk"
+    "administrative_center": "Łahojsk"
   },
   {
     "code": "lb",
@@ -947,14 +947,14 @@
   },
   {
     "code": "ma",
-    "name": "Maladziečanski",
+    "name": "Maładziečanski",
     "name_ru": "Молодечненский",
     "name_be": "Маладзечанскі",
     "region": "Minsk",
     "square": 1395.41,
     "population": 128742,
     "bordering_districts": [],
-    "administrative_center": "Maladziečna"
+    "administrative_center": "Maładziečna"
   },
   {
     "code": "md",
@@ -1009,7 +1009,7 @@
     "square": 1413.66,
     "population": 119183,
     "bordering_districts": [],
-    "administrative_center": ""
+    "administrative_center": "Smalavičy"
   },
   {
     "code": "sa",
@@ -1046,7 +1046,7 @@
   },
   {
     "code": "uz",
-    "name": "Uzdzenski",
+    "name": "Uźdzenski",
     "name_ru": "Узденский",
     "name_be": "Уздзенскі",
     "region": "Minsk",
@@ -1101,14 +1101,14 @@
   },
   {
     "code": "hl",
-    "name": "Hluski",
+    "name": "Hłuski",
     "name_ru": "Глусский",
     "name_be": "Глускі",
     "region": "Mahiloŭ",
     "square": 1340.96,
     "population": 12408,
     "bordering_districts": [],
-    "administrative_center": "Hlusk"
+    "administrative_center": "Hłusk"
   },
   {
     "code": "hc",
