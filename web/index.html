@@ -218,9 +218,15 @@
           <li>You have <b>3 attempts</b> and <b>10 seconds</b> per round.</li>
           <li>Scoring: <br/>
             <ul style="margin-top:4px;">
-              <li><b>100 points</b> for a correct answer within 2 seconds.</li>
-              <li>-20 points per failed attempt.</li>
-              <li>-5 points per full second after 2 seconds.</li>
+              <li><b>100 points</b> for a correct answer.</li>
+              <li>-15 points per failed attempt.</li>
+              <li>-5 points per 2 seconds after the first 2 seconds.</li>
+              <li>If you don't guess correctly:
+                <ul style="margin-top:4px;">
+                  <li>+20 points if at least one guess was adjacent to the correct district</li>
+                  <li>+10 points if at least one guess was 2 districts away</li>
+                </ul>
+              </li>
             </ul>
           </li>
           <li>Color hints for wrong guesses:
@@ -615,16 +621,17 @@
                         if (districtCode === currentDistrict.code) {
                             // Correct guess
                             let timeSpent = (Date.now() - roundStartTime) / 1000;
-                            let fullSeconds = Math.floor(timeSpent);
                             let failedAttemptsCount = 3 - attempts;
                             let timePenalty = 0;
-                            let remaining = Math.max(0, TOTAL_TIME - timeSpent);
-                            if (remaining < 8) {
-                                let penaltySeconds = Math.floor(8 - remaining);
+                            
+                            // Time penalty: -5 points per 2s after first 2s
+                            if (timeSpent > 2) {
+                                let penaltySeconds = Math.floor((timeSpent - 2) / 2);
                                 timePenalty = penaltySeconds * 5;
                             }
+                            
                             const baseScore = 100;
-                            const attemptPenalty = failedAttemptsCount * 20;
+                            const attemptPenalty = failedAttemptsCount * 15;
                             const roundScore = Math.max(0, baseScore - attemptPenalty - timePenalty);
                             endTaskAndBlink(
                                 (done) => blinkDistrict(this, COLOR_CORRECT, COLOR_DEFAULT, 1500, 200, done),
@@ -646,6 +653,25 @@
                             updateAttempts(attempts);
                             if (attempts <= 0 && !isLocked) {
                                 isLocked = true;
+                                
+                                // Calculate points for closest guesses
+                                let minDistance = Infinity;
+                                let failedAttemptDistances = new Set();
+                                failedAttempts.forEach(attemptCode => {
+                                    const distance = computeDistrictDistance(adjacencyMatrix, attemptCode, currentDistrict.code);
+                                    failedAttemptDistances.add(distance);
+                                    if (distance < minDistance) {
+                                        minDistance = distance;
+                                    }
+                                });
+                                
+                                let bonusPoints = 0;
+                                if (failedAttemptDistances.has(1)) {
+                                    bonusPoints = 20; // At least one yellow district
+                                } else if (failedAttemptDistances.has(2)) {
+                                    bonusPoints = 10; // At least one orange district
+                                }
+                                
                                 endTaskAndBlink(
                                     (done) => {
                                         const svgObject = document.getElementById('map');
@@ -663,7 +689,12 @@
                                             done();
                                         }
                                     },
-                                    null
+                                    () => {
+                                        if (bonusPoints > 0) {
+                                            updateScore(bonusPoints);
+                                            console.log(`Bonus points for close guesses: ${bonusPoints}`);
+                                        }
+                                    }
                                 );
                             }
                         }
