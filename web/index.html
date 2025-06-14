@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Belarus Districts Game</title>
+    <meta charset="UTF-8">
+    <title>Гульня: Рэгіёны Беларусі</title>
     <style>
         body {
             margin: 0;
@@ -199,46 +200,138 @@
                 padding: 0;
             }
         }
+        .top-right-buttons {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            display: flex;
+            gap: 12px;
+            z-index: 1100;
+        }
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 340px;
+            max-width: 90vw;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 12px rgba(0,0,0,0.12);
+            z-index: 2000;
+            padding: 32px 24px 24px 24px;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+        }
+        .side-panel.visible {
+            display: flex;
+        }
+        .side-panel .close-btn {
+            align-self: flex-end;
+            font-size: 1.5em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        #main-action-btn {
+            font-size: 2em;
+            border-radius: 16px;
+            background: #ffffff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 1200;
+            box-shadow: 0 4px 16px rgba(33,150,243,0.08);
+        }
+        @media (max-width: 600px) {
+            .side-panel { width: 98vw; padding: 18px 6px; }
+            #main-action-btn { font-size: 1.2em; padding: 16px 10vw; }
+        }
+        .icon-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #fff;
+            border: none;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+            padding: 0;
+        }
+        .icon-btn:hover {
+            box-shadow: 0 4px 16px rgba(33,150,243,0.16);
+            background: #f5faff;
+        }
+        .main-action-icon-btn {
+            border: none;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.08);
+            transition: box-shadow 0.2s, background 0.2s;
+            cursor: pointer;
+            outline: none;
+        }
+        .main-action-icon-btn:hover {
+            box-shadow: 0 4px 16px rgba(33,150,243,0.16);
+            background: #f5faff;
+        }
+        .icon-btn:focus, .main-action-icon-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        .icon-btn.main-action-icon-btn {
+            width: 96px;
+            height: 96px;
+            min-width: 96px;
+            min-height: 96px;
+        }
     </style>
 </head>
 <body>
-    <div id="start-dialog" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:3000;">
-        <div style="background:white;padding:40px 60px;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.2);text-align:center;">
-            <h2>Belarus Districts Game</h2>
-            <button id="start-game-btn" style="font-size:1.5em;padding:16px 40px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Start Game</button>
-        </div>
+    <div class="top-right-buttons">
+        <button id="show-help-btn" title="Правілы" class="icon-btn">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="15" fill="#eaf3fa"/><text x="18" y="25" text-anchor="middle" font-size="24" fill="#2196F3" font-family="Arial" font-weight="bold">?</text></svg>
+        </button>
+        <button id="show-top-btn" title="Топ-20" class="icon-btn">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="15" fill="#eafaf0"/><text x="18" y="25" text-anchor="middle" font-size="22" fill="#43a047" font-family="Arial" font-weight="bold">🏆</text></svg>
+        </button>
     </div>
-    <div id="help-icon" style="position:fixed;top:18px;right:24px;z-index:2000;cursor:pointer;font-size:2.2em;color:#2196F3;background:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);">?</div>
-    <div id="help-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);z-index:2100;align-items:center;justify-content:center;">
-      <div style="background:white;padding:32px 36px 24px 36px;border-radius:16px;max-width:420px;box-shadow:0 4px 24px rgba(0,0,0,0.18);position:relative;">
-        <button id="close-help" style="position:absolute;top:10px;right:14px;font-size:1.5em;background:none;border:none;cursor:pointer;color:#888;">&times;</button>
-        <h2 style="margin-top:0;font-size:1.3em;">How to Play</h2>
-        <ul style="padding-left:20px;font-size:1.08em;">
-          <li>Find the highlighted district on the map by clicking it.</li>
-          <li>You have <b>3 attempts</b> and <b>10 seconds</b> per round.</li>
-          <li>Scoring: <br/>
+    <div id="help-panel" class="side-panel">
+        <button class="close-btn" onclick="document.getElementById('help-panel').classList.remove('visible')">&times;</button>
+        <h2>Як гуляць</h2>
+        <ul style="padding-left:20px;">
+          <li>Знайдзіце патрэбны раён на мапе і націсніце на яго.</li>
+          <li>У вас ёсць <b>3 спробы</b> і <b>10 секунд</b> на кожны раунд. Гульня складаецца з 20 раундаў.</li>
+          <li>Ацэньванне: <br/>
             <ul style="margin-top:4px;">
-              <li><b>100 points</b> for a correct answer.</li>
-              <li>-15 points per failed attempt.</li>
-              <li>-5 points per 2 seconds after the first 2 seconds.</li>
-              <li>If you don't guess correctly:
+              <li><b>100 балаў</b> за правільны адказ.</li>
+              <li>-15 балаў за няўдалую спробу.</li>
+              <li>-5 балаў за кожныя 2 секунды пасля першых 2 секунд.</li>
+              <li>Калі не здагадаецеся:
                 <ul style="margin-top:4px;">
-                  <li>+20 points if at least one guess was adjacent to the correct district</li>
-                  <li>+10 points if at least one guess was 2 districts away</li>
+                  <li>+20 балаў, калі хаця б адна спроба была суседняй з правільным раёнам</li>
+                  <li>+10 балаў, калі хаця б адна спроба была на адлегласці 2 раёнаў</li>
                 </ul>
               </li>
             </ul>
           </li>
-          <li>Color hints for wrong guesses:
+          <li>Колеры падказак для няправільных спроб:
             <ul style="margin-top:4px;">
-              <li><span style="background:#f8fb00e6;padding:2px 8px;border-radius:4px;">Yellow</span>: Adjacent to the correct district</li>
-              <li><span style="background:#ff7806e5;padding:2px 8px;border-radius:4px;color:white;">Orange</span>: 2 districts away</li>
-              <li><span style="background:rgba(255,0,0,0.75);padding:2px 8px;border-radius:4px;color:white;">Red</span>: 3 or more districts away</li>
+              <li><span style="background:#f8fb00e6;padding:2px 8px;border-radius:4px;">Жоўты</span>: суседні з правільным раёнам</li>
+              <li><span style="background:#ff7806e5;padding:2px 8px;border-radius:4px;color:white;">Аранжавы</span>: на адлегласці 2 раёнаў</li>
+              <li><span style="background:rgba(255,0,0,0.75);padding:2px 8px;border-radius:4px;color:white;">Чырвоны</span>: 3 і больш раёнаў</li>
             </ul>
           </li>
         </ul>
-        <div style="margin-top:10px;font-size:0.98em;color:#666;">Click outside this window or the X to close.</div>
-      </div>
+    </div>
+    <div id="top-panel" class="side-panel">
+        <button class="close-btn" onclick="document.getElementById('top-panel').classList.remove('visible')">&times;</button>
+        <h2>Топ-20 вынікаў</h2>
+        <div id="top-leaderboard"></div>
     </div>
     <div class="main-container">
         <div class="top-panel">
@@ -249,13 +342,16 @@
             </div>
         </div>
         <div class="game-area">
-            <div id="game-info">
-                <div id="score">0</div>
-                <div id="attempts">
-                    <div class="attempt-light"></div>
-                    <div class="attempt-light"></div>
-                    <div class="attempt-light"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;">
+                <div id="game-info">
+                    <div id="score">0</div>
+                    <div id="attempts">
+                        <div class="attempt-light"></div>
+                        <div class="attempt-light"></div>
+                        <div class="attempt-light"></div>
+                    </div>
                 </div>
+                <button id="main-action-btn" class="icon-btn main-action-icon-btn" style="margin-top:32px;"></button>
             </div>
             <div id="map-container">
                 <object id="map" data="beldist.svg" type="image/svg+xml"></object>
@@ -263,22 +359,22 @@
         </div>
     </div>
     <div id="game-over">
-        <h2>Game Over!</h2>
+        <button id="close-gameover-btn" class="close-btn" style="position:absolute;top:16px;right:20px;font-size:2em;background:none;border:none;cursor:pointer;color:#888;">&times;</button>
+        <h2>Гульня скончаная!</h2>
         <div id="final-score">0</div>
         <div id="score-submit-area" style="margin: 18px 0 10px 0; display: flex; flex-direction: column; align-items: center; gap: 10px;">
-            <input id="player-name-input" type="text" maxlength="32" placeholder="Your name" style="font-size:1.2em;padding:8px 16px;border-radius:8px;border:1px solid #ccc;min-width:180px;text-align:center;" />
-            <button id="submit-score-btn" style="font-size:1.1em;padding:8px 24px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Submit Score</button>
+            <input id="player-name-input" type="text" maxlength="32" placeholder="Ваша імя" style="font-size:1.2em;padding:8px 16px;border-radius:8px;border:1px solid #ccc;min-width:180px;text-align:center;" />
+            <button id="submit-score-btn" style="font-size:1.1em;padding:8px 24px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Адправіць вынік</button>
             <div id="submit-score-status" style="font-size:0.98em;color:#2196F3;margin-top:4px;min-height:20px;"></div>
         </div>
         <div id="leaderboard-container" style="margin: 18px 0 10px 0; text-align: center;">
-            <h3 style="margin-bottom: 8px; font-size: 1.1em; color: #2196F3;">Top 10 Scores</h3>
+            <h3 style="margin-bottom: 8px; font-size: 1.1em; color: #2196F3;">Топ-10 вынікаў</h3>
             <table id="leaderboard-table" style="margin: 0 auto; width: auto; border-collapse:collapse; font-size:1.05em; background:white;">
-                <thead><tr><th style="text-align:left;padding:4px 18px;">Name</th><th style="text-align:right;padding:4px 18px;">Score</th></tr></thead>
+                <thead><tr><th style="text-align:left;padding:4px 18px;">Імя</th><th style="text-align:right;padding:4px 18px;">Балы</th></tr></thead>
                 <tbody></tbody>
             </table>
             <div id="leaderboard-status" style="font-size:0.98em;color:#888;margin-top:4px;"></div>
         </div>
-        <button id="play-again" style="display:block; margin: 24px auto 0 auto; padding: 15px 30px; font-size: 18px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">Play Again</button>
     </div>
     <script>
         let districts = [];
@@ -299,6 +395,8 @@
         let timerDisplayInterval = null;
         let pendingNextTask = false;
         let adjacencyMatrix = null;
+        let gameState = 'not-started'; // 'not-started', 'in-progress', 'ended'
+        let userStoppedGame = false;
 
         // Color constants
         const COLOR_DEFAULT = 'rgba(0,0,245,0.25)';      // 0000f53f
@@ -552,7 +650,9 @@
         }
 
         function endGame() {
-            document.getElementById('game-over').style.display = 'block';
+            if (!userStoppedGame) {
+                document.getElementById('game-over').style.display = 'block';
+            }
             document.getElementById('final-score').textContent = score;
             document.getElementById('player-name-input').value = '';
             document.getElementById('submit-score-btn').disabled = false;
@@ -560,13 +660,8 @@
             fetchLeaderboardAndShow();
         }
 
-        document.getElementById('play-again').addEventListener('click', () => {
+        document.getElementById('close-gameover-btn').addEventListener('click', () => {
             document.getElementById('game-over').style.display = 'none';
-            initializeGameUI();
-            usedDistricts.clear();
-            round = 0;
-            score = 0;
-            startNewTask();
         });
 
         // Handle map loading
@@ -706,15 +801,97 @@
             }
         });
 
-        // Only start the game when the button is clicked
-        window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('start-game-btn').addEventListener('click', () => {
-                document.getElementById('start-dialog').style.display = 'none';
-                initializeGameUI();
-                usedDistricts.clear();
-                score = 0;
-                startNewTask();
+        function updateMainActionBtn() {
+            const btn = document.getElementById('main-action-btn');
+            if (gameState === 'in-progress') {
+                btn.innerHTML = '<svg width="96" height="96" viewBox="0 0 44 44"><rect x="14" y="14" width="16" height="16" rx="3" fill="#e53935"/></svg>';
+                btn.title = 'Завяршыць';
+            } else {
+                btn.innerHTML = '<svg width="96" height="96" viewBox="0 0 44 44"><polygon points="18,14 32,22 18,30" fill="#4CAF50"/></svg>';
+                btn.title = 'Пачаць';
+            }
+        }
+
+        function startGame() {
+            userStoppedGame = false;
+            gameState = 'in-progress';
+            updateMainActionBtn();
+            initializeGameUI();
+            usedDistricts.clear();
+            score = 0;
+            round = 0;
+            startNewTask();
+        }
+
+        function endGameAndShowModal() {
+            userStoppedGame = true;
+            gameState = 'not-started';
+            updateMainActionBtn();
+            // Stop all timers
+            if (timerInterval) clearInterval(timerInterval);
+            if (timerDisplayInterval) clearInterval(timerDisplayInterval);
+            timerInterval = null;
+            timerDisplayInterval = null;
+            // Lock the map and reset UI
+            isLocked = true;
+            initializeGameUI();
+            usedDistricts.clear();
+            score = 0;
+            round = 0;
+            currentDistrict = null;
+        }
+
+        document.getElementById('main-action-btn').addEventListener('click', () => {
+            if (gameState === 'not-started') {
+                startGame();
+            } else if (gameState === 'in-progress') {
+                endGameAndShowModal();
+            }
+        });
+
+        document.getElementById('show-help-btn').addEventListener('click', () => {
+            document.getElementById('help-panel').classList.add('visible');
+        });
+        document.getElementById('show-top-btn').addEventListener('click', () => {
+            document.getElementById('top-panel').classList.add('visible');
+            fetchTop20Leaderboard();
+        });
+
+        function fetchTop20Leaderboard() {
+            const leaderboardDiv = document.getElementById('top-leaderboard');
+            leaderboardDiv.innerHTML = 'Загрузка...';
+            fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=20`, {
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_PAT}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.records || data.records.length === 0) {
+                    leaderboardDiv.textContent = 'Пакуль няма вынікаў.';
+                    return;
+                }
+                let html = '<table style="width:100%;font-size:1.05em;margin-top:10px;"><thead><tr><th style="text-align:left;padding:4px 12px;">Імя</th><th style="text-align:right;padding:4px 12px;">Балы</th></tr></thead><tbody>';
+                data.records.forEach(record => {
+                    const { Name, Score } = record.fields;
+                    html += `<tr><td style="text-align:left;padding:4px 12px;">${Name ? Name : '(анонім)'}</td><td style="text-align:right;padding:4px 12px;">${Score}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                leaderboardDiv.innerHTML = html;
+            })
+            .catch(err => {
+                leaderboardDiv.textContent = 'Не атрымалася загрузіць вынікі.';
+                console.error('Top-20 fetch error:', err);
             });
+        }
+
+        // On load, set initial state
+        window.addEventListener('DOMContentLoaded', () => {
+            gameState = 'not-started';
+            updateMainActionBtn();
+            // Remove old start modal logic if present
+            const oldStart = document.getElementById('start-dialog');
+            if (oldStart) oldStart.remove();
         });
 
         // Helper: BFS for shortest path in adjacency graph
@@ -745,20 +922,6 @@
             return COLOR_WRONG;
         }
 
-        // Help modal logic
-        const helpIcon = document.getElementById('help-icon');
-        const helpModal = document.getElementById('help-modal');
-        const closeHelp = document.getElementById('close-help');
-        helpIcon.addEventListener('click', () => {
-            helpModal.style.display = 'flex';
-        });
-        closeHelp.addEventListener('click', () => {
-            helpModal.style.display = 'none';
-        });
-        helpModal.addEventListener('click', (e) => {
-            if (e.target === helpModal) helpModal.style.display = 'none';
-        });
-
         // Handle score submission
         document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = document.getElementById('submit-score-btn');
@@ -767,16 +930,16 @@
             submitBtn.addEventListener('click', () => {
                 const name = nameInput.value.trim();
                 if (!name) {
-                    statusDiv.textContent = 'Please enter your name.';
+                    statusDiv.textContent = 'Калі ласка, увядзіце сваё імя.';
                     statusDiv.style.color = '#f44336';
                     return;
                 }
                 submitBtn.disabled = true;
-                statusDiv.textContent = 'Submitting...';
+                statusDiv.textContent = 'Адпраўка...';
                 statusDiv.style.color = '#2196F3';
                 submitScoreToAirtable(name, score);
                 setTimeout(() => {
-                    statusDiv.textContent = 'Score submitted!';
+                    statusDiv.textContent = 'Вынік адпраўлены!';
                     statusDiv.style.color = '#109b00';
                 }, 800);
             });
