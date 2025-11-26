@@ -419,6 +419,11 @@
                 { id: 'points_1000', points: 1000, name: 'Добры вынік', emoji: '🥉', description: 'Набраць 1000 балаў' },
                 { id: 'points_1500', points: 1500, name: 'Выдатны вынік', emoji: '🥈', description: 'Набраць 1500 балаў' },
                 { id: 'points_2000', points: 2000, name: 'Цудоўны вынік', emoji: '🥇', description: 'Набраць 2000 балаў' }
+            ],
+            alltime: [
+                { id: 'alltime_40', count: 40, name: 'Краязнаўца', emoji: '🥉', description: 'Назваць 40 розных раёнаў за ўвесь час' },
+                { id: 'alltime_80', count: 80, name: 'Эксперт', emoji: '🥈', description: 'Назваць 80 розных раёнаў за ўвесь час' },
+                { id: 'alltime_all', count: 118, name: 'Энцыклапедыст', emoji: '🥇', description: 'Назваць усе 118 раёнаў хаця б раз' }
             ]
         };
 
@@ -426,6 +431,7 @@
         let achievementsData = {
             highScore: 0,
             correctDistricts: 0,
+            uniqueDistrictsNamed: [], // Array of district codes named correctly across all games
             unlocked: []
         };
 
@@ -466,6 +472,15 @@
                 }
             });
             
+            // Check all-time unique districts achievements
+            const uniqueCount = achievementsData.uniqueDistrictsNamed.length;
+            ACHIEVEMENTS.alltime.forEach(ach => {
+                if (uniqueCount >= ach.count && !achievementsData.unlocked.includes(ach.id)) {
+                    achievementsData.unlocked.push(ach.id);
+                    newUnlocks.push(ach);
+                }
+            });
+            
             // Update high score
             if (totalScore > achievementsData.highScore) {
                 achievementsData.highScore = totalScore;
@@ -479,6 +494,14 @@
             saveAchievements();
             return newUnlocks;
         }
+        
+        // Track a correctly named district
+        function trackCorrectDistrict(districtCode) {
+            if (!achievementsData.uniqueDistrictsNamed.includes(districtCode)) {
+                achievementsData.uniqueDistrictsNamed.push(districtCode);
+                saveAchievements();
+            }
+        }
 
         // Display achievements in the game over screen
         function displayAchievements() {
@@ -488,7 +511,7 @@
             container.innerHTML = '';
             
             // Combine all achievements
-            const allAchievements = [...ACHIEVEMENTS.districts, ...ACHIEVEMENTS.points];
+            const allAchievements = [...ACHIEVEMENTS.districts, ...ACHIEVEMENTS.points, ...ACHIEVEMENTS.alltime];
             
             allAchievements.forEach(ach => {
                 const isUnlocked = achievementsData.unlocked.includes(ach.id);
@@ -527,7 +550,7 @@
             
             container.innerHTML = '';
             
-            const allAchievements = [...ACHIEVEMENTS.districts, ...ACHIEVEMENTS.points];
+            const allAchievements = [...ACHIEVEMENTS.districts, ...ACHIEVEMENTS.points, ...ACHIEVEMENTS.alltime];
             
             allAchievements.forEach(ach => {
                 const isUnlocked = achievementsData.unlocked.includes(ach.id);
@@ -754,15 +777,13 @@
             }
             document.getElementById('final-score').textContent = score;
             
-            // Display achievements
+            // Display achievements (newly unlocked ones will be highlighted)
             displayAchievements();
             
-            // Show notification for new achievements
-            if (newUnlocks.length > 0) {
-                const achievementText = newUnlocks.map(a => `${a.emoji} ${a.name}`).join(', ');
-                setTimeout(() => {
-                    alert(`Новыя дасягненні: ${achievementText}!`);
-                }, 500);
+            // Update the top panel if it's open
+            const topPanel = document.getElementById('top-panel');
+            if (topPanel && topPanel.classList.contains('visible')) {
+                displayTopAchievements();
             }
         }
 
@@ -822,6 +843,7 @@
                         if (districtCode === currentDistrict.code) {
                             // Correct guess
                             correctAnswersCount++; // Track for achievements
+                            trackCorrectDistrict(districtCode); // Track unique district for all-time achievements
                             let timeSpent = (Date.now() - roundStartTime) / 1000;
                             let failedAttemptsCount = 3 - attempts;
                             let timePenalty = 0;
