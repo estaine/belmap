@@ -26,12 +26,12 @@ async function loadSVGMap() {
 // Load district data and mappings
 async function loadDistricts() {
     try {
-        // Load district data from JSON
-        const response = await fetch('/api/districts');
+        // Load district data from JSON file (client-side)
+        const response = await fetch('districts.json');
         const districts = await response.json();
         
-        // Load mappings from CSV
-        const csvResponse = await fetch('/data/mappings.csv');
+        // Load mappings from CSV file (client-side)
+        const csvResponse = await fetch('mappings.csv');
         const csvText = await csvResponse.text();
         
         // Parse CSV and create mapping
@@ -226,19 +226,9 @@ function setupLayerControls() {
 document.getElementById('create-region').addEventListener('click', createNewRegion);
 document.getElementById('save-regions').addEventListener('click', async () => {
     try {
-        const response = await fetch('/api/regions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(regions)
-        });
-        
-        if (response.ok) {
-            alert('Regions saved successfully!');
-        } else {
-            alert('Error saving regions');
-        }
+        // Save to localStorage (client-side only)
+        localStorage.setItem('belmap-regions', JSON.stringify(regions));
+        alert('Regions saved successfully to browser storage!');
     } catch (error) {
         console.error('Error saving regions:', error);
         alert('Error saving regions');

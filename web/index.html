@@ -406,10 +406,29 @@
         const COLOR_ADJACENT = '#f8fb00e6'; // distance = 1
         const COLOR_SECOND = '#ff7806e5';   // distance = 2
 
-        // Airtable leaderboard integration
-        const AIRTABLE_PAT = 'patCzuML1BEKrhrl9.352572baba8d780db45914918f4322b7b0ca26903fb66be5158281946be99342';
-        const AIRTABLE_BASE_ID = 'appCbVj3ew3VMZEOr';
-        const AIRTABLE_TABLE_NAME = 'Leaderboard';
+        // Stub leaderboard data (no database integration)
+        const STUB_LEADERBOARD = [
+            { Name: 'Алена', Score: 1850 },
+            { Name: 'Міхась', Score: 1720 },
+            { Name: 'Святлана', Score: 1680 },
+            { Name: 'Дзмітрый', Score: 1550 },
+            { Name: 'Наталля', Score: 1490 },
+            { Name: 'Андрэй', Score: 1420 },
+            { Name: 'Вольга', Score: 1380 },
+            { Name: 'Іван', Score: 1310 },
+            { Name: 'Марыя', Score: 1250 },
+            { Name: 'Пётр', Score: 1190 },
+            { Name: 'Таццяна', Score: 1120 },
+            { Name: 'Сяргей', Score: 1080 },
+            { Name: 'Ганна', Score: 1020 },
+            { Name: 'Уладзімір', Score: 980 },
+            { Name: 'Людміла', Score: 940 },
+            { Name: 'Яўген', Score: 890 },
+            { Name: 'Зінаіда', Score: 850 },
+            { Name: 'Віктар', Score: 810 },
+            { Name: 'Алена2', Score: 770 },
+            { Name: 'Анатоль', Score: 720 }
+        ];
 
         // Load districts data
         fetch('districts_transformed.json')
@@ -597,26 +616,10 @@
         }
 
         function submitScoreToAirtable(name, score) {
-            fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${AIRTABLE_PAT}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    fields: {
-                        Name: name,
-                        Score: score
-                    }
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log('Score submitted to Airtable:', data);
-            })
-            .catch(err => {
-                console.error('Airtable submit error:', err);
-            });
+            // Stub function - no actual database submission
+            console.log('Score submission (stub):', { name, score });
+            // Simulate successful submission
+            return Promise.resolve({ success: true });
         }
 
         function fetchLeaderboardAndShow() {
@@ -624,29 +627,22 @@
             const statusDiv = document.getElementById('leaderboard-status');
             tableBody.innerHTML = '';
             statusDiv.textContent = 'Loading...';
-            fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=10`, {
-                headers: {
-                    'Authorization': `Bearer ${AIRTABLE_PAT}`
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.records || data.records.length === 0) {
+            
+            // Simulate async loading with stub data
+            setTimeout(() => {
+                const topTen = STUB_LEADERBOARD.slice(0, 10);
+                if (topTen.length === 0) {
                     statusDiv.textContent = 'No scores yet.';
                     return;
                 }
                 statusDiv.textContent = '';
-                data.records.forEach(record => {
-                    const { Name, Score } = record.fields;
+                topTen.forEach(record => {
+                    const { Name, Score } = record;
                     const tr = document.createElement('tr');
                     tr.innerHTML = `<td style="text-align:left;padding:4px 18px;">${Name ? Name : '(anon)'}</td><td style="text-align:right;padding:4px 18px;">${Score}</td>`;
                     tableBody.appendChild(tr);
                 });
-            })
-            .catch(err => {
-                statusDiv.textContent = 'Failed to load leaderboard.';
-                console.error('Leaderboard fetch error:', err);
-            });
+            }, 300);
         }
 
         function endGame() {
@@ -860,29 +856,22 @@
         function fetchTop20Leaderboard() {
             const leaderboardDiv = document.getElementById('top-leaderboard');
             leaderboardDiv.innerHTML = 'Загрузка...';
-            fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=20`, {
-                headers: {
-                    'Authorization': `Bearer ${AIRTABLE_PAT}`
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.records || data.records.length === 0) {
+            
+            // Simulate async loading with stub data
+            setTimeout(() => {
+                const topTwenty = STUB_LEADERBOARD.slice(0, 20);
+                if (topTwenty.length === 0) {
                     leaderboardDiv.textContent = 'Пакуль няма вынікаў.';
                     return;
                 }
                 let html = '<table style="width:100%;font-size:1.05em;margin-top:10px;"><thead><tr><th style="text-align:left;padding:4px 12px;">Імя</th><th style="text-align:right;padding:4px 12px;">Балы</th></tr></thead><tbody>';
-                data.records.forEach(record => {
-                    const { Name, Score } = record.fields;
+                topTwenty.forEach(record => {
+                    const { Name, Score } = record;
                     html += `<tr><td style="text-align:left;padding:4px 12px;">${Name ? Name : '(анонім)'}</td><td style="text-align:right;padding:4px 12px;">${Score}</td></tr>`;
                 });
                 html += '</tbody></table>';
                 leaderboardDiv.innerHTML = html;
-            })
-            .catch(err => {
-                leaderboardDiv.textContent = 'Не атрымалася загрузіць вынікі.';
-                console.error('Top-20 fetch error:', err);
-            });
+            }, 300);
         }
 
         // On load, set initial state

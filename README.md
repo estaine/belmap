@@ -1,6 +1,8 @@
-# Belarus Districts Interactive Map
+# Belarus Districts Interactive Map & Game
 
-An interactive web application for visualizing and managing data about districts and district-like cities in Belarus. The project collects, processes, and displays comprehensive information including:
+An interactive web application for visualizing and managing data about districts and district-like cities in Belarus. The project includes both a data management system and a **fully client-based educational game** that tests knowledge of Belarusian geography.
+
+The project collects, processes, and displays comprehensive information including:
 - Area (square kilometers)
 - Population
 - Administrative centers
@@ -10,30 +12,39 @@ An interactive web application for visualizing and managing data about districts
 
 ## Features
 
-- **Interactive Map**: Leaflet-based web interface for exploring district boundaries
-- **Data Visualization**: SVG maps with district groupings and adjacency information
+- **Client-Based Game**: Fully browser-based game with no server requirements (`/web/index.html`)
+- **Interactive Map**: SVG maps with district groupings and adjacency information
+- **Stub Leaderboard**: Local leaderboard with placeholder data (no database required)
+- **Data Visualization**: Multiple map formats and visualizations
 - **Regional Management**: Create and manage custom regional groupings
-- **REST API**: Flask backend providing district data in multiple formats
+- **REST API** (optional): Flask backend for data management and collection
 - **Automated Data Collection**: Web scraping from Wikipedia sources
 
 ## Project Structure
 
 ```
 belmap/
+├── web/                    # 🎮 Main Game (Client-based)
+│   ├── index.html          # Educational geography game
+│   ├── districts_transformed.json
+│   ├── district_adjacency.json
+│   ├── mappings.csv
+│   └── beldist.svg
 ├── src/
+│   ├── web/                # 🗺️ Regional Management Tool (Client-based)
+│   │   ├── index.html      # Interactive map interface
+│   │   ├── app.js          # Frontend logic
+│   │   ├── districts.json
+│   │   ├── mappings.csv
+│   │   └── assets/         # SVG maps
 │   ├── collectors/         # Data collection scripts
 │   │   ├── collect_districts.py       # Scrape district data from Wikipedia
 │   │   ├── fetch_district_boundaries.py  # Fetch GeoJSON boundaries
 │   │   └── generate_geojson.py        # Generate GeoJSON data
 │   ├── models/             # Data models (Pydantic)
 │   │   └── district.py
-│   ├── server/             # Flask web server
-│   │   └── app.py
-│   └── web/                # Frontend application
-│       ├── index.html      # Interactive map interface
-│       ├── app.js          # Frontend logic
-│       ├── styles.css
-│       └── assets/         # SVG maps and visualizations
+│   └── server/             # Flask web server (optional)
+│       └── app.py
 ├── data/                   # Processed data files
 │   ├── districts.json      # District information
 │   ├── district_boundaries.json  # Boundary coordinates
@@ -76,14 +87,46 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Running the Web Application
+### Option 1: Educational Geography Game (Recommended)
 
-Start the Flask development server:
+The main game is located in `/web/` and is fully client-based:
+
 ```bash
-python src/server/app.py
+cd web
+python3 -m http.server 8000
+# Visit http://localhost:8000
 ```
 
-The application will be available at `http://localhost:5000`
+Features:
+- 20 rounds of district identification
+- Scoring system with time penalties
+- Distance-based hints (color-coded)
+- Stub leaderboard (no database)
+
+### Option 2: Regional Management Tool
+
+A tool for creating custom regional groupings in `/src/web/`:
+
+```bash
+cd src/web
+python3 -m http.server 8001
+# Visit http://localhost:8001
+```
+
+Features:
+- Interactive district selection
+- Create custom regions
+- View statistics (area, population)
+- Save to localStorage
+
+### Option 3: Flask Development Server (Optional - For Data Collection)
+
+Only needed if you want to collect new data or use the legacy API:
+
+```bash
+python src/server/app.py
+# Visit http://localhost:5000
+```
 
 ### Collecting District Data
 
@@ -116,7 +159,15 @@ Convert and transform district data formats:
 python transform_districts.py
 ```
 
-## API Endpoints
+## Game Architecture
+
+The game in `/web/index.html` is **fully client-based** with no server or database dependencies:
+- All district data is loaded from static JSON files
+- Game logic runs entirely in the browser
+- Leaderboard uses stub data (placeholder for future implementation)
+- No external API calls or database connections
+
+## API Endpoints (Flask Server - Optional)
 
 - `GET /` - Main web interface
 - `GET /api/districts` - Get all districts data

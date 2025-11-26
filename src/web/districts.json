@@ -1,0 +1,35 @@
+[
+  {
+    "code": "BR",
+    "name": "Брестский (бел. Брэсцкі)",
+    "square": 118.9,
+    "population": 340318,
+    "region": null,
+    "name_ru": null,
+    "name_be": null,
+    "is_city": null,
+    "administrative_center": null
+  },
+  {
+    "code": "VC",
+    "name": "Витебский (Віцебскі)",
+    "square": 124.5,
+    "population": 362466,
+    "region": null,
+    "name_ru": null,
+    "name_be": null,
+    "is_city": null,
+    "administrative_center": null
+  },
+  {
+    "code": "HO",
+    "name": "Гомельский район (Гомельскі раён)",
+    "square": 139.8,
+    "population": 510300,
+    "region": null,
+    "name_ru": null,
+    "name_be": null,
+    "is_city": null,
+    "administrative_center": null
+  }
+] 
