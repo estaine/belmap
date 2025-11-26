@@ -296,7 +296,7 @@
         <button id="show-help-btn" title="Правілы" class="icon-btn">
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="15" fill="#eaf3fa"/><text x="18" y="25" text-anchor="middle" font-size="24" fill="#2196F3" font-family="Arial" font-weight="bold">?</text></svg>
         </button>
-        <button id="show-top-btn" title="Топ-20" class="icon-btn">
+        <button id="show-top-btn" title="Дасягненні" class="icon-btn">
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="15" fill="#eafaf0"/><text x="18" y="25" text-anchor="middle" font-size="22" fill="#43a047" font-family="Arial" font-weight="bold">🏆</text></svg>
         </button>
     </div>
@@ -330,8 +330,13 @@
     </div>
     <div id="top-panel" class="side-panel">
         <button class="close-btn" onclick="document.getElementById('top-panel').classList.remove('visible')">&times;</button>
-        <h2>Топ-20 вынікаў</h2>
-        <div id="top-leaderboard"></div>
+        <h2>Дасягненні</h2>
+        <div id="top-achievements">
+            <div style="font-size:1.2em; margin-bottom:15px; color:#2196F3; font-weight:bold;">
+                Найлепшы вынік: <span id="top-high-score-value">0</span>
+            </div>
+            <div id="top-achievements-list"></div>
+        </div>
     </div>
     <div class="main-container">
         <div class="top-panel">
@@ -362,18 +367,14 @@
         <button id="close-gameover-btn" class="close-btn" style="position:absolute;top:16px;right:20px;font-size:2em;background:none;border:none;cursor:pointer;color:#888;">&times;</button>
         <h2>Гульня скончаная!</h2>
         <div id="final-score">0</div>
-        <div id="score-submit-area" style="margin: 18px 0 10px 0; display: flex; flex-direction: column; align-items: center; gap: 10px;">
-            <input id="player-name-input" type="text" maxlength="32" placeholder="Ваша імя" style="font-size:1.2em;padding:8px 16px;border-radius:8px;border:1px solid #ccc;min-width:180px;text-align:center;" />
-            <button id="submit-score-btn" style="font-size:1.1em;padding:8px 24px;border-radius:8px;background:#2196F3;color:white;border:none;cursor:pointer;">Адправіць вынік</button>
-            <div id="submit-score-status" style="font-size:0.98em;color:#2196F3;margin-top:4px;min-height:20px;"></div>
-        </div>
-        <div id="leaderboard-container" style="margin: 18px 0 10px 0; text-align: center;">
-            <h3 style="margin-bottom: 8px; font-size: 1.1em; color: #2196F3;">Топ-10 вынікаў</h3>
-            <table id="leaderboard-table" style="margin: 0 auto; width: auto; border-collapse:collapse; font-size:1.05em; background:white;">
-                <thead><tr><th style="text-align:left;padding:4px 18px;">Імя</th><th style="text-align:right;padding:4px 18px;">Балы</th></tr></thead>
-                <tbody></tbody>
-            </table>
-            <div id="leaderboard-status" style="font-size:0.98em;color:#888;margin-top:4px;"></div>
+        <div id="achievements-container" style="margin: 20px 0; text-align: center;">
+            <div id="high-score" style="font-size:1.3em; margin-bottom:15px; color:#2196F3; font-weight:bold;">
+                Найлепшы вынік: <span id="high-score-value">0</span>
+            </div>
+            <h3 style="margin-bottom: 12px; font-size: 1.2em; color: #2196F3;">Дасягненні</h3>
+            <div id="achievements-list" style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+                <!-- Achievements will be populated by JavaScript -->
+            </div>
         </div>
     </div>
     <script>
@@ -397,6 +398,7 @@
         let adjacencyMatrix = null;
         let gameState = 'not-started'; // 'not-started', 'in-progress', 'ended'
         let userStoppedGame = false;
+        let correctAnswersCount = 0; // Track correct answers for achievements
 
         // Color constants
         const COLOR_DEFAULT = 'rgba(0,0,245,0.25)';      // 0000f53f
@@ -406,29 +408,156 @@
         const COLOR_ADJACENT = '#f8fb00e6'; // distance = 1
         const COLOR_SECOND = '#ff7806e5';   // distance = 2
 
-        // Stub leaderboard data (no database integration)
-        const STUB_LEADERBOARD = [
-            { Name: 'Алена', Score: 1850 },
-            { Name: 'Міхась', Score: 1720 },
-            { Name: 'Святлана', Score: 1680 },
-            { Name: 'Дзмітрый', Score: 1550 },
-            { Name: 'Наталля', Score: 1490 },
-            { Name: 'Андрэй', Score: 1420 },
-            { Name: 'Вольга', Score: 1380 },
-            { Name: 'Іван', Score: 1310 },
-            { Name: 'Марыя', Score: 1250 },
-            { Name: 'Пётр', Score: 1190 },
-            { Name: 'Таццяна', Score: 1120 },
-            { Name: 'Сяргей', Score: 1080 },
-            { Name: 'Ганна', Score: 1020 },
-            { Name: 'Уладзімір', Score: 980 },
-            { Name: 'Людміла', Score: 940 },
-            { Name: 'Яўген', Score: 890 },
-            { Name: 'Зінаіда', Score: 850 },
-            { Name: 'Віктар', Score: 810 },
-            { Name: 'Алена2', Score: 770 },
-            { Name: 'Анатоль', Score: 720 }
-        ];
+        // Achievement definitions
+        const ACHIEVEMENTS = {
+            districts: [
+                { id: 'districts_10', count: 10, name: 'Пачатковец', emoji: '🥉', description: 'Назваць 10 раёнаў правільна' },
+                { id: 'districts_15', count: 15, name: 'Знаўца', emoji: '🥈', description: 'Назваць 15 раёнаў правільна' },
+                { id: 'districts_20', count: 20, name: 'Майстар', emoji: '🥇', description: 'Назваць 20 раёнаў правільна' }
+            ],
+            points: [
+                { id: 'points_1000', points: 1000, name: 'Добры вынік', emoji: '🥉', description: 'Набраць 1000 балаў' },
+                { id: 'points_1500', points: 1500, name: 'Выдатны вынік', emoji: '🥈', description: 'Набраць 1500 балаў' },
+                { id: 'points_2000', points: 2000, name: 'Цудоўны вынік', emoji: '🥇', description: 'Набраць 2000 балаў' }
+            ]
+        };
+
+        // Achievement tracking
+        let achievementsData = {
+            highScore: 0,
+            correctDistricts: 0,
+            unlocked: []
+        };
+
+        // Load achievements from localStorage
+        function loadAchievements() {
+            const saved = localStorage.getItem('belmap-achievements');
+            if (saved) {
+                try {
+                    achievementsData = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error loading achievements:', e);
+                }
+            }
+        }
+
+        // Save achievements to localStorage
+        function saveAchievements() {
+            localStorage.setItem('belmap-achievements', JSON.stringify(achievementsData));
+        }
+
+        // Check and unlock achievements
+        function checkAchievements(correctCount, totalScore) {
+            let newUnlocks = [];
+            
+            // Check district achievements
+            ACHIEVEMENTS.districts.forEach(ach => {
+                if (correctCount >= ach.count && !achievementsData.unlocked.includes(ach.id)) {
+                    achievementsData.unlocked.push(ach.id);
+                    newUnlocks.push(ach);
+                }
+            });
+            
+            // Check points achievements
+            ACHIEVEMENTS.points.forEach(ach => {
+                if (totalScore >= ach.points && !achievementsData.unlocked.includes(ach.id)) {
+                    achievementsData.unlocked.push(ach.id);
+                    newUnlocks.push(ach);
+                }
+            });
+            
+            // Update high score
+            if (totalScore > achievementsData.highScore) {
+                achievementsData.highScore = totalScore;
+            }
+            
+            // Update correct districts count
+            if (correctCount > achievementsData.correctDistricts) {
+                achievementsData.correctDistricts = correctCount;
+            }
+            
+            saveAchievements();
+            return newUnlocks;
+        }
+
+        // Display achievements in the game over screen
+        function displayAchievements() {
+            const container = document.getElementById('achievements-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Combine all achievements
+            const allAchievements = [...ACHIEVEMENTS.districts, ...ACHIEVEMENTS.points];
+            
+            allAchievements.forEach(ach => {
+                const isUnlocked = achievementsData.unlocked.includes(ach.id);
+                const div = document.createElement('div');
+                div.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 8px 16px;
+                    background: ${isUnlocked ? '#e8f5e9' : '#f5f5f5'};
+                    border-radius: 8px;
+                    min-width: 300px;
+                    opacity: ${isUnlocked ? '1' : '0.5'};
+                `;
+                
+                div.innerHTML = `
+                    <span style="font-size: 2em;">${ach.emoji}</span>
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; color: ${isUnlocked ? '#2e7d32' : '#666'};">${ach.name}</div>
+                        <div style="font-size: 0.85em; color: #666;">${ach.description}</div>
+                    </div>
+                    ${isUnlocked ? '<span style="color: #2e7d32; font-size: 1.5em;">✓</span>' : ''}
+                `;
+                
+                container.appendChild(div);
+            });
+            
+            // Update high score display
+            document.getElementById('high-score-value').textContent = achievementsData.highScore;
+        }
+
+        // Display achievements in the top panel
+        function displayTopAchievements() {
+            const container = document.getElementById('top-achievements-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const allAchievements = [...ACHIEVEMENTS.districts, ...ACHIEVEMENTS.points];
+            
+            allAchievements.forEach(ach => {
+                const isUnlocked = achievementsData.unlocked.includes(ach.id);
+                const div = document.createElement('div');
+                div.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 8px 12px;
+                    background: ${isUnlocked ? '#e8f5e9' : '#f5f5f5'};
+                    border-radius: 8px;
+                    margin-bottom: 8px;
+                    opacity: ${isUnlocked ? '1' : '0.5'};
+                `;
+                
+                div.innerHTML = `
+                    <span style="font-size: 1.8em;">${ach.emoji}</span>
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; color: ${isUnlocked ? '#2e7d32' : '#666'}; font-size: 0.95em;">${ach.name}</div>
+                        <div style="font-size: 0.8em; color: #666;">${ach.description}</div>
+                    </div>
+                    ${isUnlocked ? '<span style="color: #2e7d32; font-size: 1.3em;">✓</span>' : ''}
+                `;
+                
+                container.appendChild(div);
+            });
+            
+            // Update high score display
+            document.getElementById('top-high-score-value').textContent = achievementsData.highScore;
+        }
 
         // Load districts data
         fetch('districts_transformed.json')
@@ -615,45 +744,26 @@
             }
         }
 
-        function submitScoreToAirtable(name, score) {
-            // Stub function - no actual database submission
-            console.log('Score submission (stub):', { name, score });
-            // Simulate successful submission
-            return Promise.resolve({ success: true });
-        }
-
-        function fetchLeaderboardAndShow() {
-            const tableBody = document.querySelector('#leaderboard-table tbody');
-            const statusDiv = document.getElementById('leaderboard-status');
-            tableBody.innerHTML = '';
-            statusDiv.textContent = 'Loading...';
-            
-            // Simulate async loading with stub data
-            setTimeout(() => {
-                const topTen = STUB_LEADERBOARD.slice(0, 10);
-                if (topTen.length === 0) {
-                    statusDiv.textContent = 'No scores yet.';
-                    return;
-                }
-                statusDiv.textContent = '';
-                topTen.forEach(record => {
-                    const { Name, Score } = record;
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td style="text-align:left;padding:4px 18px;">${Name ? Name : '(anon)'}</td><td style="text-align:right;padding:4px 18px;">${Score}</td>`;
-                    tableBody.appendChild(tr);
-                });
-            }, 300);
-        }
 
         function endGame() {
+            // Check for new achievements
+            const newUnlocks = checkAchievements(correctAnswersCount, score);
+            
             if (!userStoppedGame) {
                 document.getElementById('game-over').style.display = 'block';
             }
             document.getElementById('final-score').textContent = score;
-            document.getElementById('player-name-input').value = '';
-            document.getElementById('submit-score-btn').disabled = false;
-            document.getElementById('submit-score-status').textContent = '';
-            fetchLeaderboardAndShow();
+            
+            // Display achievements
+            displayAchievements();
+            
+            // Show notification for new achievements
+            if (newUnlocks.length > 0) {
+                const achievementText = newUnlocks.map(a => `${a.emoji} ${a.name}`).join(', ');
+                setTimeout(() => {
+                    alert(`Новыя дасягненні: ${achievementText}!`);
+                }, 500);
+            }
         }
 
         document.getElementById('close-gameover-btn').addEventListener('click', () => {
@@ -711,6 +821,7 @@
                         this.setAttribute('stroke-opacity', '1');
                         if (districtCode === currentDistrict.code) {
                             // Correct guess
+                            correctAnswersCount++; // Track for achievements
                             let timeSpent = (Date.now() - roundStartTime) / 1000;
                             let failedAttemptsCount = 3 - attempts;
                             let timePenalty = 0;
@@ -816,6 +927,7 @@
             usedDistricts.clear();
             score = 0;
             round = 0;
+            correctAnswersCount = 0; // Reset correct answers counter
             startNewTask();
         }
 
@@ -834,6 +946,7 @@
             usedDistricts.clear();
             score = 0;
             round = 0;
+            correctAnswersCount = 0;
             currentDistrict = null;
         }
 
@@ -850,34 +963,15 @@
         });
         document.getElementById('show-top-btn').addEventListener('click', () => {
             document.getElementById('top-panel').classList.add('visible');
-            fetchTop20Leaderboard();
+            displayTopAchievements();
         });
-
-        function fetchTop20Leaderboard() {
-            const leaderboardDiv = document.getElementById('top-leaderboard');
-            leaderboardDiv.innerHTML = 'Загрузка...';
-            
-            // Simulate async loading with stub data
-            setTimeout(() => {
-                const topTwenty = STUB_LEADERBOARD.slice(0, 20);
-                if (topTwenty.length === 0) {
-                    leaderboardDiv.textContent = 'Пакуль няма вынікаў.';
-                    return;
-                }
-                let html = '<table style="width:100%;font-size:1.05em;margin-top:10px;"><thead><tr><th style="text-align:left;padding:4px 12px;">Імя</th><th style="text-align:right;padding:4px 12px;">Балы</th></tr></thead><tbody>';
-                topTwenty.forEach(record => {
-                    const { Name, Score } = record;
-                    html += `<tr><td style="text-align:left;padding:4px 12px;">${Name ? Name : '(анонім)'}</td><td style="text-align:right;padding:4px 12px;">${Score}</td></tr>`;
-                });
-                html += '</tbody></table>';
-                leaderboardDiv.innerHTML = html;
-            }, 300);
-        }
 
         // On load, set initial state
         window.addEventListener('DOMContentLoaded', () => {
             gameState = 'not-started';
             updateMainActionBtn();
+            // Load achievements from localStorage
+            loadAchievements();
             // Remove old start modal logic if present
             const oldStart = document.getElementById('start-dialog');
             if (oldStart) oldStart.remove();
@@ -911,28 +1005,6 @@
             return COLOR_WRONG;
         }
 
-        // Handle score submission
-        document.addEventListener('DOMContentLoaded', () => {
-            const submitBtn = document.getElementById('submit-score-btn');
-            const nameInput = document.getElementById('player-name-input');
-            const statusDiv = document.getElementById('submit-score-status');
-            submitBtn.addEventListener('click', () => {
-                const name = nameInput.value.trim();
-                if (!name) {
-                    statusDiv.textContent = 'Калі ласка, увядзіце сваё імя.';
-                    statusDiv.style.color = '#f44336';
-                    return;
-                }
-                submitBtn.disabled = true;
-                statusDiv.textContent = 'Адпраўка...';
-                statusDiv.style.color = '#2196F3';
-                submitScoreToAirtable(name, score);
-                setTimeout(() => {
-                    statusDiv.textContent = 'Вынік адпраўлены!';
-                    statusDiv.style.color = '#109b00';
-                }, 800);
-            });
-        });
     </script>
 </body>
 </html> 
