@@ -441,8 +441,18 @@
             if (saved) {
                 try {
                     achievementsData = JSON.parse(saved);
+                    // Ensure uniqueDistrictsNamed exists (backward compatibility)
+                    if (!achievementsData.uniqueDistrictsNamed) {
+                        achievementsData.uniqueDistrictsNamed = [];
+                    }
                 } catch (e) {
                     console.error('Error loading achievements:', e);
+                    achievementsData = {
+                        highScore: 0,
+                        correctDistricts: 0,
+                        uniqueDistrictsNamed: [],
+                        unlocked: []
+                    };
                 }
             }
         }
@@ -497,9 +507,16 @@
         
         // Track a correctly named district
         function trackCorrectDistrict(districtCode) {
-            if (!achievementsData.uniqueDistrictsNamed.includes(districtCode)) {
-                achievementsData.uniqueDistrictsNamed.push(districtCode);
-                saveAchievements();
+            try {
+                if (!achievementsData.uniqueDistrictsNamed) {
+                    achievementsData.uniqueDistrictsNamed = [];
+                }
+                if (!achievementsData.uniqueDistrictsNamed.includes(districtCode)) {
+                    achievementsData.uniqueDistrictsNamed.push(districtCode);
+                    saveAchievements();
+                }
+            } catch (e) {
+                console.error('Error tracking district:', e);
             }
         }
 
