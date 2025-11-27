@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Гульня: Рэгіёны Беларусі</title>
+    <title>Гульня: Раёны Беларусі</title>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="icon" type="image/png" href="favicon.png">
@@ -48,6 +48,9 @@
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 16px;
+        }
+        #timer-container.hidden {
+            display: none;
         }
         #timer-bar {
             width: 100%;
@@ -292,9 +295,89 @@
             min-width: 96px;
             min-height: 96px;
         }
+        /* Mode toggle switch */
+        .mode-toggle-container {
+            position: absolute;
+            top: 24px;
+            left: 32px;
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .mode-toggle {
+            position: relative;
+            width: 80px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .mode-toggle.classic {
+            background: #4CAF50;
+        }
+        .mode-toggle.exam {
+            background: #2196F3;
+        }
+        .mode-toggle.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .mode-toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .mode-toggle.exam .mode-toggle-slider {
+            transform: translateX(40px);
+        }
+        .mode-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            min-width: 100px;
+        }
+        .mode-label.active {
+            color: #2196F3;
+            font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            .mode-toggle-container {
+                left: 16px;
+                top: 16px;
+                padding: 6px 12px;
+            }
+            .mode-label {
+                font-size: 12px;
+                min-width: 80px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Mode Toggle Switch -->
+    <div class="mode-toggle-container">
+        <span class="mode-label" id="mode-label-left">⏱️ Класічны</span>
+        <div class="mode-toggle classic" id="mode-toggle">
+            <div class="mode-toggle-slider">⏱️</div>
+        </div>
+        <span class="mode-label" id="mode-label-right">🎓 Экзаменацыйны</span>
+    </div>
     <div class="top-right-buttons">
         <button id="show-help-btn" title="Правілы" class="icon-btn">
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="16" fill="#fff"/><circle cx="18" cy="18" r="15" fill="#eaf3fa"/><text x="18" y="25" text-anchor="middle" font-size="24" fill="#2196F3" font-family="Arial" font-weight="bold">?</text></svg>
@@ -306,30 +389,57 @@
     <div id="help-panel" class="side-panel">
         <button class="close-btn" onclick="document.getElementById('help-panel').classList.remove('visible')">&times;</button>
         <h2>Як гуляць</h2>
-        <ul style="padding-left:20px;">
-          <li>Знайдзіце патрэбны раён на мапе і націсніце на яго.</li>
-          <li>У вас ёсць <b>3 спробы</b> і <b>10 секунд</b> на кожны раунд. Гульня складаецца з 20 раундаў.</li>
-          <li>Ацэньванне: <br/>
-            <ul style="margin-top:4px;">
-              <li><b>100 балаў</b> за правільны адказ.</li>
-              <li>-15 балаў за няўдалую спробу.</li>
-              <li>-5 балаў за кожныя 2 секунды пасля першых 2 секунд.</li>
-              <li>Калі не здагадаецеся:
+        
+        <div id="help-classic" style="display:none;">
+            <h3 style="color:#2196F3;">⚡ Класічны рэжым</h3>
+            <ul style="padding-left:20px;">
+              <li>Знайдзіце патрэбны раён на мапе і націсніце на яго.</li>
+              <li>У вас ёсць <b>3 спробы</b> і <b>10 секунд</b> на кожны раунд. Гульня складаецца з 20 раундаў.</li>
+              <li>Ацэньванне: <br/>
                 <ul style="margin-top:4px;">
-                  <li>+20 балаў, калі хаця б адна спроба была суседняй з правільным раёнам</li>
-                  <li>+10 балаў, калі хаця б адна спроба была на адлегласці 2 раёнаў</li>
+                  <li><b>100 балаў</b> за правільны адказ.</li>
+                  <li>-15 балаў за няўдалую спробу.</li>
+                  <li>-5 балаў за кожныя 2 секунды пасля першых 2 секунд.</li>
+                  <li>Калі не здагадаецеся:
+                    <ul style="margin-top:4px;">
+                      <li>+20 балаў, калі хаця б адна спроба была суседняй з правільным раёнам</li>
+                      <li>+10 балаў, калі хаця б адна спроба была на адлегласці 2 раёнаў</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>Колеры падказак для няправільных спроб:
+                <ul style="margin-top:4px;">
+                  <li><span style="background:#f8fb00e6;padding:2px 8px;border-radius:4px;">Жоўты</span>: суседні з правільным раёнам</li>
+                  <li><span style="background:#ff7806e5;padding:2px 8px;border-radius:4px;color:white;">Аранжавы</span>: на адлегласці 2 раёнаў</li>
+                  <li><span style="background:rgba(255,0,0,0.75);padding:2px 8px;border-radius:4px;color:white;">Чырвоны</span>: 3 і больш раёнаў</li>
                 </ul>
               </li>
             </ul>
-          </li>
-          <li>Колеры падказак для няправільных спроб:
-            <ul style="margin-top:4px;">
-              <li><span style="background:#f8fb00e6;padding:2px 8px;border-radius:4px;">Жоўты</span>: суседні з правільным раёнам</li>
-              <li><span style="background:#ff7806e5;padding:2px 8px;border-radius:4px;color:white;">Аранжавы</span>: на адлегласці 2 раёнаў</li>
-              <li><span style="background:rgba(255,0,0,0.75);padding:2px 8px;border-radius:4px;color:white;">Чырвоны</span>: 3 і больш раёнаў</li>
+        </div>
+        
+        <div id="help-exam" style="display:none;">
+            <h3 style="color:#2196F3;">📚 Экзаменацыйны рэжым</h3>
+            <ul style="padding-left:20px;">
+              <li>Знайдзіце патрэбны раён на мапе і націсніце на яго.</li>
+              <li>У вас ёсць <b>3 спробы</b> на кожны раён. Гульня ўключае <b>ўсе 118 раёнаў</b>.</li>
+              <li><b>Часу няма</b> — можаце думаць колькі трэба.</li>
+              <li>Ацэньванне: <br/>
+                <ul style="margin-top:4px;">
+                  <li>Лічыцца <b>колькасць правільна адгаданых раёнаў</b> і <b>колькасць памылак</b>.</li>
+                  <li>Вынікі параўноўваюцца: спачатку па правільных адказах (больш — лепш), пры роўнасці — па памылках (менш — лепш).</li>
+                  <li>Ідэальны вынік: 118 правільных, 0 памылак.</li>
+                </ul>
+              </li>
+              <li>Колеры падказак для няправільных спроб:
+                <ul style="margin-top:4px;">
+                  <li><span style="background:#f8fb00e6;padding:2px 8px;border-radius:4px;">Жоўты</span>: суседні з правільным раёнам</li>
+                  <li><span style="background:#ff7806e5;padding:2px 8px;border-radius:4px;color:white;">Аранжавы</span>: на адлегласці 2 раёнаў</li>
+                  <li><span style="background:rgba(255,0,0,0.75);padding:2px 8px;border-radius:4px;color:white;">Чырвоны</span>: 3 і больш раёнаў</li>
+                </ul>
+              </li>
             </ul>
-          </li>
-        </ul>
+        </div>
     </div>
     <div id="top-panel" class="side-panel">
         <button class="close-btn" onclick="document.getElementById('top-panel').classList.remove('visible')">&times;</button>
@@ -339,6 +449,14 @@
                 Найлепшы вынік: <span id="top-high-score-value">0</span>
             </div>
             <div id="top-achievements-list"></div>
+        </div>
+        <div id="top-exam" style="display:none;">
+            <div style="font-size:1.2em; margin-bottom:15px; color:#2196F3; font-weight:bold;">
+                Рэкорд (Экзаменацыйны): <span id="top-exam-high-score">0 / 118</span>
+            </div>
+            <div style="font-size:1em; color:#666;">
+                Памылак: <span id="top-exam-mistakes" style="color:#f44336; font-weight:bold;">0</span>
+            </div>
         </div>
     </div>
     <div class="main-container">
@@ -379,6 +497,20 @@
                 <!-- Achievements will be populated by JavaScript -->
             </div>
         </div>
+        <div id="exam-results-container" style="margin: 20px 0; text-align: center; display:none;">
+            <div style="font-size:1.1em; margin-bottom:10px; color:#666;">
+                Памылак: <span id="exam-current-mistakes" style="color:#f44336; font-weight:bold;">0</span>
+            </div>
+            <div id="exam-new-record-msg" style="display:none; font-size:1.5em; margin:15px 0; color:#4CAF50; font-weight:bold;">
+                🎉 Новы рэкорд!
+            </div>
+            <div style="font-size:1.3em; margin-top:15px; color:#2196F3; font-weight:bold;">
+                Рэкорд: <span id="exam-high-score-value">0 / 118 (памылак: 0)</span>
+            </div>
+        </div>
+        <button id="change-mode-btn" style="margin-top:20px;padding:12px 24px;font-size:16px;background:#2196F3;color:white;border:none;border-radius:5px;cursor:pointer;">
+            Змяніць рэжым
+        </button>
     </div>
     <script>
         let districts = [];
@@ -389,7 +521,6 @@
         let timer = null;
         let usedDistricts = new Set();
         let round = 0;
-        const TOTAL_ROUNDS = 20;
         let failedAttempts = new Set();
         let districtsDataCodes = new Set();
         let isLocked = false;
@@ -402,6 +533,16 @@
         let gameState = 'not-started'; // 'not-started', 'in-progress', 'ended'
         let userStoppedGame = false;
         let correctAnswersCount = 0; // Track correct answers for achievements
+        
+        // Game mode variables
+        let gameMode = 'classic'; // 'classic' or 'exam' - default to classic
+        const CLASSIC_ROUNDS = 20;
+        let districtsLoaded = false;
+        
+        // Get total rounds based on mode
+        function getTotalRounds() {
+            return gameMode === 'exam' ? districts.length : CLASSIC_ROUNDS;
+        }
 
         // Color constants
         const COLOR_DEFAULT = 'rgba(0,0,245,0.25)';      // 0000f53f
@@ -437,6 +578,103 @@
             uniqueDistrictsNamed: [], // Array of district codes named correctly across all games
             unlocked: []
         };
+        
+        // Exam mode high score (separate from classic mode)
+        let examHighScore = 0;
+        let examHighScoreMistakes = 0;
+        let currentGameMistakes = 0;
+        
+        // Mode toggle function
+        function toggleMode() {
+            // Don't allow switching during game
+            if (gameState === 'in-progress') {
+                return;
+            }
+            
+            // Toggle between modes
+            gameMode = gameMode === 'classic' ? 'exam' : 'classic';
+            updateModeToggleUI();
+            
+            // Update timer visibility
+            if (gameMode === 'classic') {
+                document.getElementById('timer-container').classList.remove('hidden');
+            } else {
+                document.getElementById('timer-container').classList.add('hidden');
+            }
+            
+            // Update open panels if visible
+            const helpPanel = document.getElementById('help-panel');
+            if (helpPanel && helpPanel.classList.contains('visible')) {
+                updateHelpPanelContent();
+            }
+            
+            const topPanel = document.getElementById('top-panel');
+            if (topPanel && topPanel.classList.contains('visible')) {
+                updateTopPanelContent();
+            }
+            
+            console.log('Mode switched to:', gameMode);
+        }
+        
+        // Update help panel content based on current mode
+        function updateHelpPanelContent() {
+            if (gameMode === 'classic') {
+                document.getElementById('help-classic').style.display = 'block';
+                document.getElementById('help-exam').style.display = 'none';
+            } else {
+                document.getElementById('help-classic').style.display = 'none';
+                document.getElementById('help-exam').style.display = 'block';
+            }
+        }
+        
+        // Update top panel content based on current mode
+        function updateTopPanelContent() {
+            if (gameMode === 'classic') {
+                displayTopAchievements();
+                document.getElementById('top-achievements').style.display = 'block';
+                document.getElementById('top-exam').style.display = 'none';
+            } else {
+                document.getElementById('top-achievements').style.display = 'none';
+                document.getElementById('top-exam').style.display = 'block';
+                document.getElementById('top-exam-high-score').textContent = examHighScore + ' / 118';
+                document.getElementById('top-exam-mistakes').textContent = examHighScoreMistakes;
+            }
+        }
+        
+        // Update mode toggle UI
+        function updateModeToggleUI() {
+            const toggle = document.getElementById('mode-toggle');
+            const slider = toggle.querySelector('.mode-toggle-slider');
+            const leftLabel = document.getElementById('mode-label-left');
+            const rightLabel = document.getElementById('mode-label-right');
+            
+            if (gameMode === 'classic') {
+                toggle.classList.remove('exam');
+                toggle.classList.add('classic');
+                slider.textContent = '⏱️';
+                leftLabel.classList.add('active');
+                rightLabel.classList.remove('active');
+            } else {
+                toggle.classList.remove('classic');
+                toggle.classList.add('exam');
+                slider.textContent = '🎓';
+                leftLabel.classList.remove('active');
+                rightLabel.classList.add('active');
+            }
+            
+            // Lock/unlock toggle based on game state
+            if (gameState === 'in-progress') {
+                toggle.classList.add('disabled');
+            } else {
+                toggle.classList.remove('disabled');
+            }
+        }
+        
+        // Update top panel based on mode
+        function updateTopPanelForMode() {
+            // Just call the main update function
+            updateTopPanelContent();
+        }
 
         // Load achievements from localStorage
         function loadAchievements() {
@@ -458,11 +696,55 @@
                     };
                 }
             }
+            
+            // Load exam mode high score
+            const examSaved = localStorage.getItem('belmap-exam-highscore');
+            if (examSaved) {
+                try {
+                    const savedData = JSON.parse(examSaved);
+                    if (typeof savedData === 'object') {
+                        examHighScore = savedData.correct || 0;
+                        examHighScoreMistakes = savedData.mistakes || 0;
+                    } else {
+                        // Old format compatibility
+                        examHighScore = parseInt(examSaved);
+                        examHighScoreMistakes = 0;
+                    }
+                } catch (e) {
+                    console.error('Error loading exam high score:', e);
+                    examHighScore = 0;
+                    examHighScoreMistakes = 0;
+                }
+            }
         }
 
         // Save achievements to localStorage
         function saveAchievements() {
             localStorage.setItem('belmap-achievements', JSON.stringify(achievementsData));
+        }
+        
+        // Save exam mode high score
+        function saveExamHighScore() {
+            const data = {
+                correct: examHighScore,
+                mistakes: examHighScoreMistakes
+            };
+            localStorage.setItem('belmap-exam-highscore', JSON.stringify(data));
+        }
+        
+        // Compare exam results: correct answers first, then mistakes (fewer is better)
+        function isNewExamRecordBetter(newCorrect, newMistakes) {
+            if (newCorrect > examHighScore) {
+                return true; // More correct answers
+            } else if (newCorrect === examHighScore) {
+                // Same correct answers, compare mistakes
+                if (examHighScoreMistakes === 0) {
+                    // First time with this many correct answers
+                    return true;
+                }
+                return newMistakes < examHighScoreMistakes; // Fewer mistakes is better
+            }
+            return false; // Fewer correct answers
         }
 
         // Check and unlock achievements
@@ -602,34 +884,65 @@
             document.getElementById('top-high-score-value').textContent = achievementsData.highScore;
         }
 
-        // Load districts data
-        fetch('districts_transformed.json')
-            .then(response => response.json())
-            .then(data => {
-                districts = data;
-                districtsDataCodes = new Set(districts.map(d => d.code));
-            });
+        // Load data function
+        function loadGameData() {
+            console.log('Starting to load game data...');
+            
+            // Load districts data
+            fetch('districts_transformed.json')
+                .then(response => {
+                    console.log('Fetch response received:', response.status, response.ok);
+                    if (!response.ok) {
+                        throw new Error('HTTP error ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('JSON parsed successfully, data length:', data.length);
+                    districts = data;
+                    districtsDataCodes = new Set(districts.map(d => d.code));
+                    districtsLoaded = true;
+                    console.log('Districts loaded:', districts.length);
+                    
+                    // Enable mode toggle and update UI
+                    updateModeToggleUI();
+                    console.log('Mode toggle enabled, default mode:', gameMode);
+                })
+                .catch(error => {
+                    console.error('ERROR loading districts:', error);
+                    console.error('Error type:', error.constructor.name);
+                    console.error('Error message:', error.message);
+                    console.error('Error stack:', error.stack);
+                    console.error('Current URL:', window.location.href);
+                    
+                    let errorMsg = 'Памылка загрузкі даных: ' + error.message;
+                    if (window.location.protocol === 'file:') {
+                        errorMsg = 'Адкрыйце праз HTTP-сервер (не file://)!';
+                    }
+                    alert('❌ ' + errorMsg);
+                });
 
-        // Load adjacency data
-        fetch('district_adjacency.json')
-            .then(response => response.json())
-            .then(data => {
-                adjacencyMatrix = data;
-                console.log('Adjacency matrix loaded successfully:', adjacencyMatrix);
-            })
-            .catch(error => {
-                console.error('Error loading adjacency matrix:', error);
-                // Retry loading after a delay
-                setTimeout(() => {
-                    fetch('district_adjacency.json')
-                        .then(response => response.json())
-                        .then(data => {
-                            adjacencyMatrix = data;
-                            console.log('Adjacency matrix loaded successfully on retry:', adjacencyMatrix);
-                        })
-                        .catch(err => console.error('Retry failed:', err));
-                }, 2000);
-            });
+            // Load adjacency data
+            fetch('district_adjacency.json')
+                .then(response => response.json())
+                .then(data => {
+                    adjacencyMatrix = data;
+                    console.log('Adjacency matrix loaded successfully');
+                })
+                .catch(error => {
+                    console.error('Error loading adjacency matrix:', error);
+                    // Retry loading after a delay
+                    setTimeout(() => {
+                        fetch('district_adjacency.json')
+                            .then(response => response.json())
+                            .then(data => {
+                                adjacencyMatrix = data;
+                                console.log('Adjacency matrix loaded successfully on retry');
+                            })
+                            .catch(err => console.error('Retry failed:', err));
+                    }, 2000);
+                });
+        }
 
         function initializeGameUI() {
             // Reset all UI elements to initial state
@@ -642,7 +955,8 @@
         }
 
         function startNewTask() {
-            if (round >= TOTAL_ROUNDS) {
+            const totalRounds = getTotalRounds();
+            if (round >= totalRounds) {
                 endGame();
                 return;
             }
@@ -657,16 +971,34 @@
                 endGame();
                 return;
             }
-            currentDistrict = availableDistricts[Math.floor(Math.random() * availableDistricts.length)];
+            
+            // In exam mode, pick districts sequentially (randomized at start)
+            // In classic mode, pick randomly
+            if (gameMode === 'exam') {
+                currentDistrict = availableDistricts[0];
+            } else {
+                currentDistrict = availableDistricts[Math.floor(Math.random() * availableDistricts.length)];
+            }
+            
             usedDistricts.add(currentDistrict.code);
             document.getElementById('target-district').textContent = currentDistrict.name_be;
-            document.getElementById('timer-bar').style.width = '100%';
-            document.getElementById('timer-bar').style.backgroundColor = '#4CAF50';
-            roundStartTime = Date.now();
-            if (timerInterval) clearInterval(timerInterval);
-            if (timerDisplayInterval) clearInterval(timerDisplayInterval);
-            timerInterval = setInterval(updateTimer, 1000);
-            timerDisplayInterval = setInterval(updateTimerDisplay, 100);
+            
+            // Only start timer in classic mode
+            if (gameMode === 'classic') {
+                document.getElementById('timer-bar').style.width = '100%';
+                document.getElementById('timer-bar').style.backgroundColor = '#4CAF50';
+                roundStartTime = Date.now();
+                if (timerInterval) clearInterval(timerInterval);
+                if (timerDisplayInterval) clearInterval(timerDisplayInterval);
+                timerInterval = setInterval(updateTimer, 1000);
+                timerDisplayInterval = setInterval(updateTimerDisplay, 100);
+            } else {
+                // In exam mode, no timer
+                if (timerInterval) clearInterval(timerInterval);
+                if (timerDisplayInterval) clearInterval(timerDisplayInterval);
+                roundStartTime = Date.now(); // Still track for display purposes
+            }
+            
             round++;
         }
 
@@ -675,8 +1007,13 @@
             if (timerInterval) clearInterval(timerInterval);
             if (timerDisplayInterval) clearInterval(timerDisplayInterval);
             updateAttempts(3);
-            document.getElementById('timer-bar').style.width = '100%';
-            document.getElementById('timer-bar').style.backgroundColor = '#4CAF50';
+            
+            // Only update timer display in classic mode
+            if (gameMode === 'classic') {
+                document.getElementById('timer-bar').style.width = '100%';
+                document.getElementById('timer-bar').style.backgroundColor = '#4CAF50';
+            }
+            
             if (updateScoreFn) updateScoreFn();
             blinkFn(() => {
                 setTimeout(() => {
@@ -789,26 +1126,86 @@
 
 
         function endGame() {
-            // Check for new achievements
-            const newUnlocks = checkAchievements(correctAnswersCount, score);
-            
-            if (!userStoppedGame) {
-                document.getElementById('game-over').style.display = 'block';
+            if (gameMode === 'classic') {
+                // Classic mode: use achievements system
+                const newUnlocks = checkAchievements(correctAnswersCount, score);
+                
+                if (!userStoppedGame) {
+                    document.getElementById('game-over').style.display = 'block';
+                }
+                document.getElementById('final-score').textContent = score;
+                
+                // Show classic mode results
+                document.getElementById('achievements-container').style.display = 'block';
+                document.getElementById('exam-results-container').style.display = 'none';
+                
+                // Display achievements (newly unlocked ones will be highlighted)
+                displayAchievements();
+                
+                // Update the top panel if it's open
+                const topPanel = document.getElementById('top-panel');
+                if (topPanel && topPanel.classList.contains('visible')) {
+                    displayTopAchievements();
+                }
+            } else {
+                // Exam mode: simple scoring
+                if (!userStoppedGame) {
+                    document.getElementById('game-over').style.display = 'block';
+                }
+                
+                // Check if this is a new record
+                const isNewRecord = isNewExamRecordBetter(correctAnswersCount, currentGameMistakes);
+                if (isNewRecord) {
+                    examHighScore = correctAnswersCount;
+                    examHighScoreMistakes = currentGameMistakes;
+                    saveExamHighScore();
+                }
+                
+                // Show exam mode results
+                document.getElementById('final-score').textContent = correctAnswersCount + ' / ' + districts.length;
+                document.getElementById('achievements-container').style.display = 'none';
+                document.getElementById('exam-results-container').style.display = 'block';
+                
+                // Display high score with mistakes
+                const highScoreText = examHighScore + ' / ' + districts.length + 
+                    ' (памылак: ' + examHighScoreMistakes + ')';
+                document.getElementById('exam-high-score-value').textContent = highScoreText;
+                
+                // Display current game mistakes
+                const currentMistakesEl = document.getElementById('exam-current-mistakes');
+                if (currentMistakesEl) {
+                    currentMistakesEl.textContent = currentGameMistakes;
+                }
+                
+                // Show "New Record!" message if applicable
+                const recordMsgEl = document.getElementById('exam-new-record-msg');
+                if (recordMsgEl) {
+                    recordMsgEl.style.display = isNewRecord ? 'block' : 'none';
+                }
+                
+                // Update the top panel if it's open
+                const topPanel = document.getElementById('top-panel');
+                if (topPanel && topPanel.classList.contains('visible')) {
+                    updateTopPanelForMode();
+                }
             }
-            document.getElementById('final-score').textContent = score;
             
-            // Display achievements (newly unlocked ones will be highlighted)
-            displayAchievements();
-            
-            // Update the top panel if it's open
-            const topPanel = document.getElementById('top-panel');
-            if (topPanel && topPanel.classList.contains('visible')) {
-                displayTopAchievements();
-            }
+            // Game ended, unlock mode toggle and update state
+            gameState = 'not-started';
+            updateModeToggleUI();
+            updateMainActionBtn();
         }
 
         document.getElementById('close-gameover-btn').addEventListener('click', () => {
             document.getElementById('game-over').style.display = 'none';
+        });
+        
+        document.getElementById('change-mode-btn').addEventListener('click', () => {
+            document.getElementById('game-over').style.display = 'none';
+            // Mode can be changed via toggle now
+            gameState = 'not-started';
+            updateMainActionBtn();
+            updateModeToggleUI();
         });
 
         // Handle map loading
@@ -862,32 +1259,44 @@
                         this.setAttribute('stroke-opacity', '1');
                         if (districtCode === currentDistrict.code) {
                             // Correct guess
-                            correctAnswersCount++; // Track for achievements
-                            trackCorrectDistrict(districtCode); // Track unique district for all-time achievements
-                            let timeSpent = (Date.now() - roundStartTime) / 1000;
-                            let failedAttemptsCount = 3 - attempts;
-                            let timePenalty = 0;
+                            correctAnswersCount++; // Track for achievements/score
                             
-                            // Time penalty: -5 points per 2s after first 2s
-                            if (timeSpent > 2) {
-                                let penaltySeconds = Math.floor((timeSpent - 2) / 2);
-                                timePenalty = penaltySeconds * 5;
-                            }
-                            
-                            const baseScore = 100;
-                            const attemptPenalty = failedAttemptsCount * 15;
-                            const roundScore = Math.max(0, baseScore - attemptPenalty - timePenalty);
-                            endTaskAndBlink(
-                                (done) => blinkDistrict(this, COLOR_CORRECT, COLOR_DEFAULT, 1500, 200, done),
-                                () => {
-                                    updateScore(roundScore);
-                                    console.log(`Time spent: ${timeSpent.toFixed(1)}s`);
-                                    console.log(`Time penalty: ${timePenalty} points`);
-                                    console.log(`Failed attempts: ${failedAttemptsCount}`);
-                                    console.log(`Failed attempts penalty: ${attemptPenalty} points`);
-                                    console.log(`Total: ${roundScore} points`);
+                            if (gameMode === 'classic') {
+                                trackCorrectDistrict(districtCode); // Track unique district for all-time achievements
+                                let timeSpent = (Date.now() - roundStartTime) / 1000;
+                                let failedAttemptsCount = 3 - attempts;
+                                let timePenalty = 0;
+                                
+                                // Time penalty: -5 points per 2s after first 2s
+                                if (timeSpent > 2) {
+                                    let penaltySeconds = Math.floor((timeSpent - 2) / 2);
+                                    timePenalty = penaltySeconds * 5;
                                 }
-                            );
+                                
+                                const baseScore = 100;
+                                const attemptPenalty = failedAttemptsCount * 15;
+                                const roundScore = Math.max(0, baseScore - attemptPenalty - timePenalty);
+                                endTaskAndBlink(
+                                    (done) => blinkDistrict(this, COLOR_CORRECT, COLOR_DEFAULT, 1500, 200, done),
+                                    () => {
+                                        updateScore(roundScore);
+                                        console.log(`Time spent: ${timeSpent.toFixed(1)}s`);
+                                        console.log(`Time penalty: ${timePenalty} points`);
+                                        console.log(`Failed attempts: ${failedAttemptsCount}`);
+                                        console.log(`Failed attempts penalty: ${attemptPenalty} points`);
+                                        console.log(`Total: ${roundScore} points`);
+                                    }
+                                );
+                            } else {
+                                // Exam mode: just count correct answers, no complex scoring
+                                endTaskAndBlink(
+                                    (done) => blinkDistrict(this, COLOR_CORRECT, COLOR_DEFAULT, 1500, 200, done),
+                                    () => {
+                                        // Update score display to show correct count
+                                        document.getElementById('score').textContent = correctAnswersCount;
+                                    }
+                                );
+                            }
                         } else {
                             // Wrong guess
                             let timeSpent = (Date.now() - roundStartTime) / 1000;
@@ -895,51 +1304,80 @@
                             failedAttempts.add(districtCode);
                             attempts--;
                             updateAttempts(attempts);
+                            
+                            // Track mistakes in exam mode
+                            if (gameMode === 'exam') {
+                                currentGameMistakes++;
+                                console.log('Mistakes so far:', currentGameMistakes);
+                            }
                             if (attempts <= 0 && !isLocked) {
                                 isLocked = true;
                                 
-                                // Calculate points for closest guesses
-                                let minDistance = Infinity;
-                                let failedAttemptDistances = new Set();
-                                failedAttempts.forEach(attemptCode => {
-                                    const distance = computeDistrictDistance(adjacencyMatrix, attemptCode, currentDistrict.code);
-                                    failedAttemptDistances.add(distance);
-                                    if (distance < minDistance) {
-                                        minDistance = distance;
+                                if (gameMode === 'classic') {
+                                    // Calculate points for closest guesses (classic mode only)
+                                    let minDistance = Infinity;
+                                    let failedAttemptDistances = new Set();
+                                    failedAttempts.forEach(attemptCode => {
+                                        const distance = computeDistrictDistance(adjacencyMatrix, attemptCode, currentDistrict.code);
+                                        failedAttemptDistances.add(distance);
+                                        if (distance < minDistance) {
+                                            minDistance = distance;
+                                        }
+                                    });
+                                    
+                                    let bonusPoints = 0;
+                                    if (failedAttemptDistances.has(1)) {
+                                        bonusPoints = 20; // At least one yellow district
+                                    } else if (failedAttemptDistances.has(2)) {
+                                        bonusPoints = 10; // At least one orange district
                                     }
-                                });
-                                
-                                let bonusPoints = 0;
-                                if (failedAttemptDistances.has(1)) {
-                                    bonusPoints = 20; // At least one yellow district
-                                } else if (failedAttemptDistances.has(2)) {
-                                    bonusPoints = 10; // At least one orange district
-                                }
-                                
-                                endTaskAndBlink(
-                                    (done) => {
-                                        const svgObject = document.getElementById('map');
-                                        if (svgObject.contentDocument) {
-                                            const svgDoc = svgObject.contentDocument;
-                                            const correctPath = svgDoc.getElementById('dist-' + currentDistrict.code);
-                                            if (correctPath) {
-                                                setTimeout(() => {
-                                                    blinkDistrict(correctPath, COLOR_CORRECT_MISSED, COLOR_DEFAULT, 1500, 200, done);
-                                                }, 0);
+                                    
+                                    endTaskAndBlink(
+                                        (done) => {
+                                            const svgObject = document.getElementById('map');
+                                            if (svgObject.contentDocument) {
+                                                const svgDoc = svgObject.contentDocument;
+                                                const correctPath = svgDoc.getElementById('dist-' + currentDistrict.code);
+                                                if (correctPath) {
+                                                    setTimeout(() => {
+                                                        blinkDistrict(correctPath, COLOR_CORRECT_MISSED, COLOR_DEFAULT, 1500, 200, done);
+                                                    }, 0);
+                                                } else {
+                                                    done();
+                                                }
                                             } else {
                                                 done();
                                             }
-                                        } else {
-                                            done();
+                                        },
+                                        () => {
+                                            if (bonusPoints > 0) {
+                                                updateScore(bonusPoints);
+                                                console.log(`Bonus points for close guesses: ${bonusPoints}`);
+                                            }
                                         }
-                                    },
-                                    () => {
-                                        if (bonusPoints > 0) {
-                                            updateScore(bonusPoints);
-                                            console.log(`Bonus points for close guesses: ${bonusPoints}`);
-                                        }
-                                    }
-                                );
+                                    );
+                                } else {
+                                    // Exam mode: no bonus points, just show correct district
+                                    endTaskAndBlink(
+                                        (done) => {
+                                            const svgObject = document.getElementById('map');
+                                            if (svgObject.contentDocument) {
+                                                const svgDoc = svgObject.contentDocument;
+                                                const correctPath = svgDoc.getElementById('dist-' + currentDistrict.code);
+                                                if (correctPath) {
+                                                    setTimeout(() => {
+                                                        blinkDistrict(correctPath, COLOR_CORRECT_MISSED, COLOR_DEFAULT, 1500, 200, done);
+                                                    }, 0);
+                                                } else {
+                                                    done();
+                                                }
+                                            } else {
+                                                done();
+                                            }
+                                        },
+                                        null
+                                    );
+                                }
                             }
                         }
                     });
@@ -962,15 +1400,38 @@
         }
 
         function startGame() {
+            // Safety check: ensure districts are loaded
+            if (!districtsLoaded || districts.length === 0) {
+                alert('Даныя яшчэ загружаюцца. Калі ласка, пачакайце момант...');
+                return;
+            }
+            
             userStoppedGame = false;
             gameState = 'in-progress';
             updateMainActionBtn();
+            updateModeToggleUI(); // Lock the toggle
             initializeGameUI();
             usedDistricts.clear();
             score = 0;
             round = 0;
             correctAnswersCount = 0; // Reset correct answers counter
+            currentGameMistakes = 0; // Reset mistakes counter
+            
+            // In exam mode, shuffle districts for variety
+            if (gameMode === 'exam') {
+                districts = shuffleArray([...districts]);
+            }
+            
             startNewTask();
+        }
+        
+        // Shuffle array helper
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
         function endGameAndShowModal() {
@@ -990,6 +1451,8 @@
             round = 0;
             correctAnswersCount = 0;
             currentDistrict = null;
+            // Unlock mode toggle
+            updateModeToggleUI();
         }
 
         document.getElementById('main-action-btn').addEventListener('click', () => {
@@ -1002,21 +1465,33 @@
 
         document.getElementById('show-help-btn').addEventListener('click', () => {
             document.getElementById('help-panel').classList.add('visible');
+            updateHelpPanelContent();
         });
         document.getElementById('show-top-btn').addEventListener('click', () => {
             document.getElementById('top-panel').classList.add('visible');
-            displayTopAchievements();
+            updateTopPanelContent();
         });
 
         // On load, set initial state
         window.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded');
             gameState = 'not-started';
             updateMainActionBtn();
             // Load achievements from localStorage
             loadAchievements();
+            
+            // Add mode toggle click handler
+            document.getElementById('mode-toggle').addEventListener('click', toggleMode);
+            
+            // Initialize mode toggle UI
+            updateModeToggleUI();
+            
             // Remove old start modal logic if present
             const oldStart = document.getElementById('start-dialog');
             if (oldStart) oldStart.remove();
+            
+            // Load game data after DOM is ready
+            loadGameData();
         });
 
         // Helper: BFS for shortest path in adjacency graph
