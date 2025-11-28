@@ -356,15 +356,99 @@
             color: #2196F3;
             font-weight: bold;
         }
-        @media (max-width: 600px) {
+        .mode-label-below {
+            display: none;
+            font-size: 14px;
+            color: #2196F3;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 8px;
+        }
+        .left-game-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #mode-toggle-wrapper-responsive {
+            display: none;
+        }
+        #top-buttons-wrapper-responsive {
+            display: none;
+        }
+        @media (max-width: 1599px) {
+            #mode-toggle-wrapper-responsive {
+                display: block;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
             .mode-toggle-container {
-                left: 16px;
-                top: 16px;
-                padding: 6px 12px;
+                position: static;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 16px;
+                padding: 8px 12px;
+                background: transparent;
+                box-shadow: none;
             }
             .mode-label {
+                display: none !important;
+            }
+            .mode-label-below {
+                display: block;
+            }
+            .left-game-column {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            #top-buttons-wrapper-responsive {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                margin-top: 16px;
+            }
+            .top-right-buttons {
+                position: static;
+                justify-content: center;
+            }
+        }
+        @media (max-width: 800px) {
+            .game-area {
+                flex-direction: column;
+                align-items: center;
+            }
+            #game-info {
+                flex-direction: row;
+                margin-top: 0;
+                margin-bottom: 16px;
+                min-width: 0;
+                padding: 16px 8px;
+            }
+            #score {
+                margin-bottom: 0;
+                margin-right: 24px;
+            }
+            #attempts {
+                flex-direction: row;
+                gap: 8px;
+            }
+            #map-container {
+                padding: 0;
+            }
+            .left-game-column {
+                padding-top: 120px;
+            }
+        }
+        @media (max-width: 600px) {
+            .mode-toggle-container {
+                padding: 10px 14px;
+            }
+            .mode-label-below {
                 font-size: 12px;
-                min-width: 80px;
+            }
+            .left-game-column {
+                padding-top: 100px;
             }
         }
     </style>
@@ -377,6 +461,7 @@
             <div class="mode-toggle-slider">⏱️</div>
         </div>
         <span class="mode-label" id="mode-label-right">🎓 Экзаменацыйны</span>
+        <span class="mode-label-below" id="mode-label-below">⏱️ Класічны</span>
     </div>
     <div class="top-right-buttons">
         <button id="show-help-btn" title="Правілы" class="icon-btn">
@@ -468,7 +553,8 @@
             </div>
         </div>
         <div class="game-area">
-            <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="left-game-column">
+                <div id="mode-toggle-wrapper-responsive"></div>
                 <div id="game-info">
                     <div id="score">0</div>
                     <div id="attempts">
@@ -478,6 +564,7 @@
                     </div>
                 </div>
                 <button id="main-action-btn" class="icon-btn main-action-icon-btn" style="margin-top:32px;"></button>
+                <div id="top-buttons-wrapper-responsive"></div>
             </div>
             <div id="map-container">
                 <object id="map" data="beldist.svg" type="image/svg+xml"></object>
@@ -647,6 +734,7 @@
             const slider = toggle.querySelector('.mode-toggle-slider');
             const leftLabel = document.getElementById('mode-label-left');
             const rightLabel = document.getElementById('mode-label-right');
+            const belowLabel = document.getElementById('mode-label-below');
             
             if (gameMode === 'classic') {
                 toggle.classList.remove('exam');
@@ -654,12 +742,14 @@
                 slider.textContent = '⏱️';
                 leftLabel.classList.add('active');
                 rightLabel.classList.remove('active');
+                if (belowLabel) belowLabel.textContent = '⏱️ Класічны';
             } else {
                 toggle.classList.remove('classic');
                 toggle.classList.add('exam');
                 slider.textContent = '🎓';
                 leftLabel.classList.remove('active');
                 rightLabel.classList.add('active');
+                if (belowLabel) belowLabel.textContent = '🎓 Экзаменацыйны';
             }
             
             // Lock/unlock toggle based on game state
@@ -1472,6 +1562,36 @@
             updateTopPanelContent();
         });
 
+        // Function to reposition mode toggle and top buttons based on screen width
+        function repositionModeToggle() {
+            const modeToggle = document.querySelector('.mode-toggle-container');
+            const responsiveWrapper = document.getElementById('mode-toggle-wrapper-responsive');
+            const topButtons = document.querySelector('.top-right-buttons');
+            const topButtonsWrapper = document.getElementById('top-buttons-wrapper-responsive');
+            
+            if (window.innerWidth < 1600) {
+                // Move mode toggle to responsive wrapper (above score)
+                if (responsiveWrapper && modeToggle && !responsiveWrapper.contains(modeToggle)) {
+                    responsiveWrapper.appendChild(modeToggle);
+                }
+                
+                // Move top buttons below play button
+                if (topButtonsWrapper && topButtons && !topButtonsWrapper.contains(topButtons)) {
+                    topButtonsWrapper.appendChild(topButtons);
+                }
+            } else {
+                // Move mode toggle back to body (original position)
+                if (modeToggle && modeToggle.parentElement === responsiveWrapper) {
+                    document.body.insertBefore(modeToggle, document.body.firstChild);
+                }
+                
+                // Move top buttons back to original position (top right)
+                if (topButtons && topButtons.parentElement === topButtonsWrapper) {
+                    document.body.appendChild(topButtons);
+                }
+            }
+        }
+
         // On load, set initial state
         window.addEventListener('DOMContentLoaded', () => {
             console.log('DOM Content Loaded');
@@ -1486,6 +1606,9 @@
             // Initialize mode toggle UI
             updateModeToggleUI();
             
+            // Reposition mode toggle based on screen size
+            repositionModeToggle();
+            
             // Remove old start modal logic if present
             const oldStart = document.getElementById('start-dialog');
             if (oldStart) oldStart.remove();
@@ -1493,6 +1616,9 @@
             // Load game data after DOM is ready
             loadGameData();
         });
+        
+        // Reposition on window resize
+        window.addEventListener('resize', repositionModeToggle);
 
         // Helper: BFS for shortest path in adjacency graph
         function computeDistrictDistance(adjacency, from, to) {
